@@ -25,4 +25,4 @@ Project.send(:include, RedmineSprintBoardPro::ProjectPatch)
 require_relative 'hooks/view_issues_form_details_bottom_hook'
 require_relative 'hooks/view_issues_show_hook'
 require_relative 'lib/issue_patch'
-Issue.send(:include, RedmineSprintBoardPro::IssuePatch)
+Issue.include RedmineSprintBoardPro::IssuePatch unless Issue.included_modules.include?(RedmineSprintBoardPro::IssuePatch)
