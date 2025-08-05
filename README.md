@@ -105,5 +105,4 @@ Inspired by RedmineUP Agile Plugin and the Redmine community.
 ---
 
 Would you like me to include a badge section (e.g., version, downloads, build status), or generate a basic `gemspec` or plugin `.rb` stub too?
-
 ```
