@@ -20,9 +20,12 @@ Redmine::Plugin.register :redmine_sprint_board_pro do
   menu :project_menu, :sprints, { controller: 'sprints', action: 'index' }, caption: 'Manage Sprints', after: :agile_board, param: :project_id
 end
 require_dependency 'project'
-require_relative 'lib/project_patch'
-Project.send(:include, RedmineSprintBoardPro::ProjectPatch)
 require_relative 'hooks/view_issues_form_details_bottom_hook'
 require_relative 'hooks/view_issues_show_hook'
-require_relative 'lib/issue_patch'
-Issue.include RedmineSprintBoardPro::IssuePatch unless Issue.included_modules.include?(RedmineSprintBoardPro::IssuePatch)
+require_relative 'lib/redmine_sprint_board_pro/project_patch'
+require_relative 'lib/redmine_sprint_board_pro/issue_patch'
+
+Rails.configuration.to_prepare do
+  Project.include RedmineSprintBoardPro::ProjectPatch unless Project.included_modules.include?(RedmineSprintBoardPro::ProjectPatch)
+  Issue.include RedmineSprintBoardPro::IssuePatch unless Issue.included_modules.include?(RedmineSprintBoardPro::IssuePatch)
+end
