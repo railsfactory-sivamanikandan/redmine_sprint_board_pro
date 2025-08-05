@@ -1,0 +1,25 @@
+<h3>Velocity Chart for <%= @sprint.name %></h3>
+<canvas id="velocityChart" width="400" height="200"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  fetch('<%= velocity_project_sprint_path(@project, @sprint, format: :json) %>')
+    .then(res => res.json())
+    .then(data => {
+      new Chart(document.getElementById('velocityChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Total Points', 'Closed Points'],
+          datasets: [{
+            label: 'Story Points',
+            data: [data.total, data.closed],
+            backgroundColor: ['#3498db', '#2ecc71']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    });
+</script>

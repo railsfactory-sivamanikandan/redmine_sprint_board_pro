@@ -1,0 +1,72 @@
+<%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
+<h2>Sprints for <%= @project.name %></h2>
+<div class="flex-aligned">
+  <div>
+  </div>
+  <div>
+    <%= link_to 'New Sprint', new_project_sprint_path(@project), class: 'icon icon-add' %>
+  </div>
+</div>
+
+<%= form_with url: project_sprints_path(@project), method: :get, local: true, class: 'query-form' do %>
+  <div class="filters">
+    <label for="status_filter">Status:</label>
+    <select name="status" id="status_filter" onchange="this.form.submit()">
+      <option value="">All</option>
+      <option value="active" <%= 'selected' if params[:status] == 'active' %>>Active</option>
+      <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Completed</option>
+    </select>
+  </div>
+<% end %>
+
+<table class="list">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Status</th>
+      <th>Issues</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sprints.each do |sprint| %>
+      <tr>
+        <td>#<%= sprint.id %></td>
+        <td><%= link_to sprint.name, project_sprint_path(@project, sprint) %></td>
+        <td><%= sprint.start_date %></td>
+        <td><%= sprint.end_date %></td>
+        <td><%= sprint.completed? ? 'Completed' : 'Active' %></td>
+        <td><%= sprint.issues.count %></td>
+        <td>
+          <%= link_to 'Edit', edit_project_sprint_path(@project, sprint), class: 'icon icon-edit' %>
+          <%= link_to 'Delete', project_sprint_path(@project, sprint), method: :delete, data: { confirm: 'Are you sure?' }, class: 'icon icon-del' %>
+          <% if sprint.completed? %>
+            <%= link_to 'Mark as Active', toggle_completed_project_sprint_path(@project, sprint), method: :patch, class: 'icon icon-checked', data: { turbo: false } %>
+          <% else %>
+            <%= link_to 'Mark as Completed', toggle_completed_project_sprint_path(@project, sprint), method: :patch, class: 'icon icon-unchecked', data: { turbo: false } %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    <% if @sprints.count == 0 %>
+    <tr>
+      <td colspan="7">
+        No Sprint found.
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="pagination">
+  <%= pagination_links_full(@sprint_pages, @sprint_count) %>
+</div>
+
+<p class="other-formats">
+  Also available in:
+  <%= link_to 'CSV', url_for(format: 'csv') %> |
+  <%= link_to 'PDF', url_for(format: 'pdf') %>
+</p>

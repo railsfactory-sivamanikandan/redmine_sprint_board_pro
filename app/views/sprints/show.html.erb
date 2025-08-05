@@ -1,0 +1,82 @@
+<%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
+<% content_for :header_tags do %>
+  <meta name="csrf-token" content="<%= form_authenticity_token %>">
+  <script>window.projectIdentifier = "<%= @project.identifier %>"</script>
+<% end %>
+<h2><%= @sprint.name %> (Sprint)</h2>
+<p><strong>Start Date:</strong> <%= @sprint.start_date %></p>
+<p><strong>End Date:</strong> <%= @sprint.end_date %></p>
+<p>
+  <%= link_to 'View Burndown Chart', burndown_project_sprint_path(@project, @sprint), class: 'icon icon-stats' %>
+</p>
+<p>
+  <%= link_to 'Velocity Chart', velocity_project_sprint_path(@project, @sprint), class: 'icon icon-stats' %>
+</p>
+<div class="drag-container">
+  <div class="drag-table">
+    <h3>Issues in this Sprint</h3>
+    <table class="list issues-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Subject</th>
+          <th>Status</th>
+          <th>Assigned To</th>
+          <th>Story Points</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="sprint-issues" class="droppable-area" data-sprint="<%= @sprint.id %>">
+        <% if @sprint.issues.any? %>
+          <% @sprint.issues.each do |issue| %>
+            <tr class="sprint-card" draggable="true" data-id="<%= issue.id %>">
+              <td><strong>#<%= issue.id %></strong></td>
+              <td><%= issue.subject %></td>
+              <td><%= issue.status.name %></td>
+              <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
+              <td><%= issue.story_points || 0 %></td>
+              <td>
+                <%= link_to 'Remove', update_sprint_project_agile_board_path(@project, id: issue.id, sprint_id: ''), method: :post, data: { confirm: 'Remove this issue from sprint?' }, class: 'icon icon-del' %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr class="droppable-empty"><td colspan="6">Drop issues here to assign</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="drag-table">
+    <h3>Unassigned Issues</h3>
+    <table class="list issues-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Subject</th>
+          <th>Status</th>
+          <th>Assigned To</th>
+          <th>Story Points</th>
+        </tr>
+      </thead>
+      <tbody id="unassigned-issues" class="droppable-area" data-sprint="">
+        <% unassigned = @project.issues.where(sprint_id: nil) %>
+        <% if unassigned.any? %>
+          <% unassigned.each do |issue| %>
+            <tr class="sprint-card" draggable="true" data-id="<%= issue.id %>">
+              <td><strong>#<%= issue.id %></strong></td>
+              <td><%= issue.subject %></td>
+              <td><%= issue.status.name %></td>
+              <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
+              <td><%= issue.story_points || 0 %></td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr class="droppable-empty"><td colspan="5">Drop issues here to unassign</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<p><%= link_to '⬅ Back', project_sprints_path(@project), class: 'icon icon-back' %></p>
+<%= javascript_include_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>

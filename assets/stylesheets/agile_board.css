@@ -1,0 +1,172 @@
+.agile-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.agile-board {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 2rem;
+}
+
+.status-column {
+  background: #f6f7f9;
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 280px;
+  max-width: 300px;
+  flex: 0 0 auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.status-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+  padding: 8px 0;
+  background-color: #4f80a8;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+  cursor: grab;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.card-meta {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.priority-urgent {
+  background-color: #f44336;
+  color: white;
+}
+.priority-high {
+  background-color: #ff9800;
+  color: white;
+}
+.priority-normal {
+  background-color: #2196f3;
+  color: white;
+}
+.priority-low {
+  background-color: #4caf50;
+  color: white;
+}
+.priority-immediate {
+  background-color: #9c27b0;
+  color: white;
+}
+.priority-lowest {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+.query-form {
+  margin-bottom: 1em;
+}
+.filters {
+  margin-bottom: 20px;
+}
+.filters label {
+  margin-right: 0.5em;
+}
+.filters select {
+  margin-right: 2em;
+}
+.pagination {
+  margin-top: 1em;
+}
+.flex-aligned {
+  display: flex;
+  justify-content: space-between;
+}
+
+.issues-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+}
+.issues-table th, .issues-table td {
+  padding: 0.5em;
+  border: 1px solid #ccc;
+}
+.sprint-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 4px;
+  cursor: grab;
+}
+.droppable-area {
+  background: #f1f8ff;
+  min-height: 40px;
+}
+.droppable-area.dragover {
+  outline: 2px dashed #007acc;
+}
+.droppable-empty td {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  height: 60px;
+}
+.drag-container {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.drag-table {
+  flex: 1;
+  min-width: 300px;
+}
+
+#suggestion-box {
+  padding: 1em;
+  border: 2px dashed #ffc107;
+  background-color: #fffde7;
+  border-radius: 6px;
+  margin-top: 1.5em;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#suggestion-box h3 {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 1em;
+  color: #333;
+}
+.smart-suggestions input[type="checkbox"] {
+  transform: scale(1.1);
+  margin-top: 2px;
+}

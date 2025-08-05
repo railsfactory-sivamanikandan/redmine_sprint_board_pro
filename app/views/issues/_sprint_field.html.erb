@@ -1,0 +1,9 @@
+<% if @project && @project.sprints.any? %>
+  <p>
+    <%= f.select :sprint_id, @project.sprints.collect { |s| [s.name, s.id] }, include_blank: true %>
+  </p>
+
+  <p>
+    <%= f.number_field :story_points, min: 0 %>
+  </p>
+<% end %>

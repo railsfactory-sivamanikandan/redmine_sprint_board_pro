@@ -1,0 +1,34 @@
+<h3>🔮 Smart Backlog Suggestions</h3>
+<table class="list issues-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Subject</th>
+      <th>Status</th>
+      <th>Assigned To</th>
+      <th>Story Points</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% Sprint.smart_backlog_candidates(@project).each do |issue| %>
+      <tr>
+        <td><%= check_box_tag "issue_ids[]", issue.id %></td>
+        <td><%= issue.subject %></td>
+        <td><%= issue.status.name %></td>
+        <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
+        <td><%= issue.story_points || 0 %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<script>
+  function toggleSuggestions() {
+    const box = document.getElementById('suggestion-box');
+    if (box.style.display === 'none' || box.style.display === '') {
+      box.style.display = 'block';
+    } else {
+      box.style.display = 'none';
+    }
+  }
+</script>

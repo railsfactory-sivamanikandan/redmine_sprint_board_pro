@@ -1,0 +1,19 @@
+<% if @issue.respond_to?(:sprint) || @issue.respond_to?(:story_points) %>
+  <hr/>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <div class="sprint attribute">
+        <div class="label">Sprint:</div>
+        <div class="value">
+          <%= @issue.sprint.present? ? (link_to @issue.sprint.name, project_sprint_path(@project, @issue.sprint)) : 'Not assigned'%>
+        </div>
+      </div>
+      <div class="story_points attribute">
+        <div class="label">Story Points:</div>
+        <div class="value">
+          <%= @issue.story_points || '-' %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

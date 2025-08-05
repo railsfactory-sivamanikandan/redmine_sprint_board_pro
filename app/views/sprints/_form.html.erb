@@ -1,0 +1,36 @@
+<% issues = Sprint.smart_backlog_candidates(@project)%>
+<% if issues.count > 0 %>
+  <button type="button" onclick="toggleSuggestions()" class="button icon icon-lightbulb">
+    💡 Show Smart Suggestions
+  </button>
+<% end %>
+<%= form_with model: [@project, @sprint], local: true do |form| %>
+  <div class="box tabular filedroplistner">
+    <div id="all_attributes">
+      <p>
+        <%= form.label :name, for: 'sprint_name' %>
+        <%= form.text_field :name, size: 15, id: 'sprint_name' %>
+      </p>
+      <p>
+        <%= form.label :start_date, for: 'sprint_start_date' %>
+        <%= form.date_field :start_date, id: 'sprint_start_date' %>
+      </p>
+      <p>
+        <%= form.label :end_date, for: 'sprint_end_date' %>
+        <%= form.date_field :end_date, id: 'sprint_end_date' %>
+      </p>
+      <% if @sprint.persisted? %>
+        <p>
+          <%= form.label :completed, "Mark as Completed" %>
+          <%= form.check_box :completed %>
+        </p>
+      <% end %>
+      <div id="suggestion-box" style="display:none;">
+        <%= render partial: 'sprints/smart_suggestions', locals: { project: @project, issues: issues } %>
+      </div>
+      <p>
+        <%= form.submit %>
+      </p>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,32 @@
+<h2>Burndown Chart for <%= @sprint.name %></h2>
+
+<canvas id="burndown-chart" width="800" height="400"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('burndown-chart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: <%= raw @burndown_data.map { |d| d[0].strftime('%Y-%m-%d') }.to_json %>,
+      datasets: [{
+        label: 'Remaining Story Points',
+        data: <%= raw @burndown_data.map(&:last).to_json %>,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.2
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Story Points' }
+        },
+        x: {
+          title: { display: true, text: 'Date' }
+        }
+      }
+    }
+  });
+</script>
