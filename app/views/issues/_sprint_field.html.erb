@@ -1,4 +1,4 @@
-<% if @project && @project.sprints.any? %>
+<% if @project && @project.module_enabled?(:agile_board) && @project.sprints.any? %>
   <p>
     <%= f.select :sprint_id, @project.sprints.collect { |s| [s.name, s.id] }, include_blank: true %>
   </p>

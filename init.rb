@@ -19,11 +19,11 @@ Redmine::Plugin.register :redmine_sprint_board_pro do
   menu :project_menu, :agile_board, { controller: 'agile_board', action: 'index' }, caption: 'Agile Board', after: :activity, param: :project_id
   menu :project_menu, :sprints, { controller: 'sprints', action: 'index' }, caption: 'Manage Sprints', after: :agile_board, param: :project_id
 end
-require_dependency 'project'
-require_relative 'hooks/view_issues_form_details_bottom_hook'
-require_relative 'hooks/view_issues_show_hook'
 
 Rails.configuration.to_prepare do
+  require_dependency 'project'
+  require_relative 'hooks/view_issues_form_details_bottom_hook'
+  require_relative 'hooks/view_issues_show_hook'
   require_relative 'lib/redmine_sprint_board_pro/project_patch'
   require_relative 'lib/redmine_sprint_board_pro/issue_patch'
   Project.include RedmineSprintBoardPro::ProjectPatch unless Project.included_modules.include?(RedmineSprintBoardPro::ProjectPatch)

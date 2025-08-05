@@ -1,4 +1,4 @@
-<% if @issue.respond_to?(:sprint) || @issue.respond_to?(:story_points) %>
+<% if @project.module_enabled?(:agile_board) && @issue.respond_to?(:sprint) || @issue.respond_to?(:story_points) %>
   <hr/>
   <div class="splitcontent">
     <div class="splitcontentleft">
