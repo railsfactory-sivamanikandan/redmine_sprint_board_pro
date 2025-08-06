@@ -31,7 +31,7 @@
       <div class="card-list droppable-area" data-status-id="<%= status.id %>">
         <% (@issues[status] || []).each do |issue| %>
           <% priority_name = issue.priority.try(:name).to_s.parameterize %>
-          <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>">
+          <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>" data-lock-version="<%= issue.lock_version %>">
             <div class="card-title">#<%= issue.id %>: <%= issue.subject %></div>
             <div class="card-meta">
               <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span><br>

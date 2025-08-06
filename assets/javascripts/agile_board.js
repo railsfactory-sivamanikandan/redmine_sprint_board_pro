@@ -1,15 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initDragDrop({
-    cardSelector: '.card',
-    dropSelector: '.status-column',
-    dataKey: 'status_id',
-    dropTargetAttr: 'statusId',
-    urlPath: 'update_status'
-  });
-
-  initDragDrop({
     cardSelector: '.sprint-card',
-    dropSelector: '.droppable-area',
+    dropSelector: '.sprint-droppable-area',
     dataKey: 'sprint_id',
     dropTargetAttr: 'sprint',
     urlPath: 'update_sprint'
@@ -23,6 +15,7 @@ function initDragDrop({ cardSelector, dropSelector, dataKey, dropTargetAttr, url
   document.querySelectorAll(cardSelector).forEach(card => {
     card.addEventListener('dragstart', e => {
       e.dataTransfer.setData('id', card.dataset.id);
+      e.dataTransfer.setData('origin', card.parentElement.id); // tbody ID
     });
   });
 
@@ -41,15 +34,128 @@ function initDragDrop({ cardSelector, dropSelector, dataKey, dropTargetAttr, url
       dropZone.classList.remove('dragover');
 
       const id = e.dataTransfer.getData('id');
-      const targetValue = dropZone.dataset[dropTargetAttr];
+      const originId = e.dataTransfer.getData('origin');
+      const targetSprintId = dropZone.dataset[dropTargetAttr];
 
-      fetch(`/projects/${projectId}/agile_board/${urlPath}?id=${id}&${dataKey}=${targetValue}`, {
+      fetch(`/projects/${projectId}/agile_board/${urlPath}?id=${id}&${dataKey}=${targetSprintId}`, {
         method: 'POST',
         headers: { 'X-CSRF-Token': csrfToken }
-      }).then(() => location.reload());
+      }).then(response => {
+        if (!response.ok) {
+          alert('Failed to update sprint assignment.');
+          return;
+        }
+
+        const card = document.querySelector(`${cardSelector}[data-id="${id}"]`);
+        const oldParent = document.getElementById(originId);
+        const newParent = dropZone;
+
+        if (!card || !newParent || newParent === card.parentElement) return;
+
+        const isNowUnassigned = newParent.id === 'unassigned-issues';
+
+        // Remove .action-cell <td> from card if moving to unassigned
+        if (isNowUnassigned) {
+          const actionCell = card.querySelector('.action-cell');
+          if (actionCell) actionCell.remove();
+        } else {
+          // Add Remove link if moving into sprint
+          if (!card.querySelector('.action-cell')) {
+            const actionTd = document.createElement('td');
+            actionTd.className = 'action-cell';
+
+            const link = document.createElement('a');
+            link.href = `/projects/${projectId}/agile_board/update_sprint?id=${id}&sprint_id=`;
+            link.className = 'remove-sprint-link icon icon-del';
+            link.title = 'Remove from Sprint';
+            link.innerText = ' Remove';
+            actionTd.appendChild(link);
+            card.appendChild(actionTd);
+          }
+        }
+
+        // Move card to new parent
+        newParent.appendChild(card);
+
+        // Remove empty row from new parent
+        const emptyRow = newParent.querySelector('.droppable-empty');
+        if (emptyRow) emptyRow.remove();
+
+        // Add empty row to old parent if it's now empty
+        if (oldParent && oldParent.querySelectorAll(cardSelector).length === 0) {
+          const colCount = oldParent.closest('table').querySelectorAll('thead th').length;
+          const emptyTr = document.createElement('tr');
+          emptyTr.className = 'droppable-empty';
+          const td = document.createElement('td');
+          td.colSpan = colCount;
+          td.innerHTML = oldParent.id === 'unassigned-issues'
+            ? '<em>Drop issues here to unassign</em>'
+            : '<em>Drop issues here to assign</em>';
+          emptyTr.appendChild(td);
+          oldParent.appendChild(emptyTr);
+        }
+      });
     });
   });
 }
+
+function attachDragHandlers() {
+  document.querySelectorAll('.sprint-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('id', card.dataset.id);
+    });
+  });
+}
+
+
+document.addEventListener('click', function (e) {
+  if (e.target.matches('a.remove-sprint-link')) {
+    e.preventDefault();
+    if (!confirm('Remove this issue from sprint?')) return;
+
+    const link = e.target;
+    const row = link.closest('tr');
+    const tableBody = row.parentElement;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    fetch(link.href, {
+      method: 'POST',
+      headers: { 'X-CSRF-Token': csrfToken }
+    }).then(response => {
+      if (response.ok) {
+        const newRow = row.cloneNode(true);
+        newRow.querySelector('.action-cell')?.remove(); // Remove action cell for unassigned
+        newRow.classList.add('sprint-card');
+        newRow.setAttribute('draggable', 'true');
+        row.remove();
+
+        // If the old sprint table is now empty, show message
+        if (tableBody.querySelectorAll('tr.sprint-card').length === 0) {
+          const colCount = tableBody.closest('table').querySelectorAll('thead th').length;
+          const emptyTr = document.createElement('tr');
+          emptyTr.className = 'droppable-empty';
+          const td = document.createElement('td');
+          td.colSpan = colCount;
+          td.innerHTML = '<em>Drop issues here to assign</em>';
+          emptyTr.appendChild(td);
+          tableBody.appendChild(emptyTr);
+        }
+
+        // Append new row to unassigned issues table
+        const unassignedTbody = document.querySelector('#unassigned-issues');
+        if (unassignedTbody) {
+          const emptyRow = unassignedTbody.querySelector('.droppable-empty');
+          if (emptyRow) emptyRow.remove();
+          unassignedTbody.appendChild(newRow);
+          attachDragHandlers();
+        }
+      } else {
+        alert('Failed to remove from sprint.');
+      }
+    });
+  }
+});
+
 
 document.addEventListener("DOMContentLoaded", function () {
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -58,16 +164,37 @@ document.addEventListener("DOMContentLoaded", function () {
     new Sortable(list, {
       group: "cards",
       animation: 150,
-      onEnd: function () {
-        const issueIds = Array.from(list.querySelectorAll(".card")).map(card => card.dataset.id);
+      onEnd: function (evt) {
+        const issueId = evt.item.dataset.id;
+        const fromStatusId = evt.from.closest(".status-column").dataset.statusId;
+        const toStatusId = evt.to.closest(".status-column").dataset.statusId;
+        const lockVersion = evt.item.dataset.lockVersion;
 
-        fetch(`/projects/${projectId}/agile_board/update_positions`, {
+        const issueIds = Array.from(evt.to.querySelectorAll(".card")).map(card => card.dataset.id);
+        const newPosition = issueIds.indexOf(issueId); // 0-based index
+
+        fetch(`/projects/${projectId}/agile_board/update_issue`, {
           method: "POST",
           headers: {
             'X-CSRF-Token': csrfToken,
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ issue_ids: issueIds })
+          body: JSON.stringify({
+            id: issueId,
+            status_id: toStatusId,
+            board_position: newPosition,
+            lock_version: lockVersion
+          })
+        }).then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            alert("Update failed: possible concurrent update.");
+          }
+        }).then(data => {
+          if (data?.lock_version) {
+            evt.item.dataset.lockVersion = data.lock_version;
+          }
         });
       }
     });

@@ -1,5 +1,6 @@
 class AgileBoardController < ApplicationController
   before_action :find_project
+  before_action :find_issue, only: [:update_issue, :update_sprint]
 
   def index
     @sprints = Sprint.where(project_id: @project.id).order(start_date: :desc)
@@ -8,32 +9,31 @@ class AgileBoardController < ApplicationController
     @issues = @project.issues.where(sprint_id: @selected_sprint&.id).order(:board_position).includes(:assigned_to, :status).group_by(&:status)
   end
 
-  def update_status
-    issue = Issue.find(params[:id])
-    issue.init_journal(User.current)
-    issue.status_id = params[:status_id] if params[:status_id].present?
-    issue.save!
-    head :ok
+  def update_issue
+    @issue.init_journal(User.current)
+    @issue.status_id = params[:status_id] if params[:status_id].present?
+    @issue.board_position = params[:board_position] if params[:board_position].present?
+    if @issue.save
+      render json: { lock_version: @issue.lock_version }
+    else
+      render json: { error: @issue.errors.full_messages.to_sentence }, status: :unprocessable_entity
+    end
   end
 
   def update_sprint
-    @issue = Issue.find(params[:id])
     @issue.init_journal(User.current)
     @issue.sprint_id = params[:sprint_id]
     @issue.save
     head :ok
   end
 
-  def update_positions
-    params[:issue_ids].each_with_index do |issue_id, index|
-      Issue.where(id: issue_id).update_all(board_position: index)
-    end
-    render json: { success: true }
-  end
-
   private
 
   def find_project
     @project = Project.find(params[:project_id])
+  end
+
+  def find_issue
+    @issue = @project.issues.find(params[:id])
   end
 end

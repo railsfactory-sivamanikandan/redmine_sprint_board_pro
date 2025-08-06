@@ -34,7 +34,7 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody id="sprint-issues" class="droppable-area" data-sprint="<%= @sprint.id %>">
+      <tbody id="sprint-issues" class="sprint-droppable-area" data-sprint="<%= @sprint.id %>">
         <% if @sprint.issues.any? %>
           <% @sprint.issues.each do |issue| %>
             <tr class="sprint-card" draggable="true" data-id="<%= issue.id %>">
@@ -43,10 +43,9 @@
               <td><%= issue.status.name %></td>
               <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
               <td><%= issue.story_points || 0 %></td>
-              <td>
+              <td class="action-cell">
                 <%= link_to 'Remove', update_sprint_project_agile_board_path(@project, id: issue.id, sprint_id: ''),
-                            method: :post, data: { confirm: 'Remove this issue from sprint?' },
-                            class: 'icon icon-del', title: 'Remove from Sprint' %>
+                            class: 'icon icon-del remove-sprint-link', title: 'Remove from Sprint' %>
               </td>
             </tr>
           <% end %>
@@ -70,7 +69,7 @@
           <th>Story Points</th>
         </tr>
       </thead>
-      <tbody id="unassigned-issues" class="droppable-area" data-sprint="">
+      <tbody id="unassigned-issues" class="sprint-droppable-area" data-sprint="">
         <% unassigned = @project.issues.where(sprint_id: nil).where(status_id: IssueStatus.where(is_closed: false)) %>
         <% if unassigned.any? %>
           <% unassigned.each do |issue| %>
