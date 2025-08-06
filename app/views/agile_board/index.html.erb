@@ -1,7 +1,10 @@
 <%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
 <% content_for :header_tags do %>
   <meta name="csrf-token" content="<%= form_authenticity_token %>">
-  <script>window.projectIdentifier = "<%= @project.identifier %>"</script>
+  <script>
+    window.projectIdentifier = "<%= @project.identifier %>"
+    window.allowedStatusTransitions = <%= raw @allowed_transitions.to_json %>;
+  </script>
 <% end %>
 
 <div class="agile-board-header">

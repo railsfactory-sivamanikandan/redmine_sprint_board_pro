@@ -160,10 +160,30 @@ document.addEventListener('click', function (e) {
 document.addEventListener("DOMContentLoaded", function () {
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
   const projectId = window.projectIdentifier;
+  const allowedTransitions = window.allowedStatusTransitions || {};
+
+  let draggedItem = null;
+
   document.querySelectorAll(".card-list").forEach(list => {
     new Sortable(list, {
       group: "cards",
       animation: 150,
+
+      onStart: function (evt) {
+        draggedItem = evt.item;
+        const issueId = draggedItem.dataset.id;
+        const allowed = allowedTransitions[issueId] || [];
+
+        document.querySelectorAll(".status-column").forEach(col => {
+          const statusId = parseInt(col.dataset.statusId);
+          if (allowed.includes(statusId)) {
+            col.classList.add("allowed-drop");
+          } else {
+            col.classList.add("not-allowed-drop");
+          }
+        });
+      },
+
       onEnd: function (evt) {
         const issueId = evt.item.dataset.id;
         const fromStatusId = evt.from.closest(".status-column").dataset.statusId;
@@ -171,7 +191,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const lockVersion = evt.item.dataset.lockVersion;
 
         const issueIds = Array.from(evt.to.querySelectorAll(".card")).map(card => card.dataset.id);
-        const newPosition = issueIds.indexOf(issueId); // 0-based index
+        const newPosition = issueIds.indexOf(issueId);
+        const oldPosition = evt.oldIndex;
+
+        const statusChanged = fromStatusId !== toStatusId;
+        const positionChanged = newPosition !== oldPosition;
+
+        // Check for not allowed status move
+        const allowed = window.allowedStatusTransitions?.[issueId] || [];
+        if (statusChanged && !allowed.includes(Number(toStatusId))) {
+          alert("🚫 This status transition is not allowed.");
+          evt.from.insertBefore(evt.item, evt.from.children[evt.oldIndex]);
+          document.querySelectorAll(".status-column").forEach(col => {
+            col.classList.remove("allowed-drop", "not-allowed-drop");
+          });
+          return;
+        }
+
+        // Only send API call if something actually changed
+        if (!statusChanged && !positionChanged) {
+          document.querySelectorAll(".status-column").forEach(col => {
+            col.classList.remove("allowed-drop", "not-allowed-drop");
+          });
+          return;
+        }
 
         fetch(`/projects/${projectId}/agile_board/update_issue`, {
           method: "POST",
@@ -189,12 +232,15 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response.ok) {
             return response.json();
           } else {
-            alert("Update failed: possible concurrent update.");
+            alert("❌ Update failed. Please try again.");
           }
         }).then(data => {
           if (data?.lock_version) {
             evt.item.dataset.lockVersion = data.lock_version;
           }
+        });
+        document.querySelectorAll(".status-column").forEach(col => {
+          col.classList.remove("allowed-drop", "not-allowed-drop");
         });
       }
     });

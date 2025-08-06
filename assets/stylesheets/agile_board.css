@@ -198,3 +198,13 @@
 .issues-table tr:hover {
   background-color: #eef6ff;
 }
+
+.status-column.allowed-drop {
+  border: 2px solid green;
+  background-color: #eaffea;
+}
+
+.status-column.not-allowed-drop {
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
