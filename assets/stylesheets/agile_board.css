@@ -170,3 +170,31 @@
   transform: scale(1.1);
   margin-top: 2px;
 }
+
+.sprint-summary.box {
+  padding: 1em;
+  background: #f9f9f9;
+  border-left: 5px solid #469;
+  margin-bottom: 2em;
+  border-radius: 4px;
+}
+
+.drag-container {
+  display: flex;
+  gap: 2em;
+  flex-wrap: wrap;
+}
+
+.drag-table {
+  flex: 1 1 45%;
+  min-width: 400px;
+}
+
+.issues-table th, .issues-table td {
+  padding: 0.5em;
+  vertical-align: middle;
+}
+
+.issues-table tr:hover {
+  background-color: #eef6ff;
+}

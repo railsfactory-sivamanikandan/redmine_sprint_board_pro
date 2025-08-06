@@ -34,7 +34,7 @@
   <tbody>
     <% @sprints.each do |sprint| %>
       <tr>
-        <td>#<%= sprint.id %></td>
+        <td><%= link_to sprint.id, project_sprint_path(@project, sprint) %></td>
         <td><%= link_to sprint.name, project_sprint_path(@project, sprint) %></td>
         <td><%= sprint.start_date %></td>
         <td><%= sprint.end_date %></td>
