@@ -6,6 +6,9 @@
 <h2><%= @sprint.name %> (Sprint)</h2>
 <p><strong>Start Date:</strong> <%= @sprint.start_date %></p>
 <p><strong>End Date:</strong> <%= @sprint.end_date %></p>
+<p><strong>Total Story Points:</strong> <%= @sprint.total_points %></p>
+<p><strong>Completed Points:</strong> <%= @sprint.completed_points %></p>
+<p><strong>Progress:</strong> <%= sprint_progress_percent(@sprint) %></p>
 <p>
   <%= link_to 'View Burndown Chart', burndown_project_sprint_path(@project, @sprint), class: 'icon icon-stats' %>
 </p>
@@ -60,7 +63,7 @@
         </tr>
       </thead>
       <tbody id="unassigned-issues" class="droppable-area" data-sprint="">
-        <% unassigned = @project.issues.where(sprint_id: nil) %>
+        <% unassigned = @project.issues.where(sprint_id: nil).where(status_id: IssueStatus.where(is_closed: false)) %>
         <% if unassigned.any? %>
           <% unassigned.each do |issue| %>
             <tr class="sprint-card" draggable="true" data-id="<%= issue.id %>">

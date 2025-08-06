@@ -41,4 +41,9 @@ module SprintsHelper
     timestamp = Time.now.strftime('%Y-%m-%d')
     "sprints-#{project_part}#{entity}-#{timestamp}.#{extension}"
   end
+
+  def sprint_progress_percent(sprint)
+    return 0 if sprint.total_points.to_i == 0
+    ((sprint.completed_points.to_f / sprint.total_points) * 100).round(1)
+  end
 end

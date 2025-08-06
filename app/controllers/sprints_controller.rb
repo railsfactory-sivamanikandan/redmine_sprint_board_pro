@@ -74,7 +74,7 @@ class SprintsController < ApplicationController
     start_date = @sprint.start_date
     end_date = @sprint.end_date
 
-    total_points = @sprint.issues.sum(:story_points) || 0
+    total_points = @sprint.total_points
 
     daily_data = (start_date..end_date).map do |day|
       completed = @sprint.issues.

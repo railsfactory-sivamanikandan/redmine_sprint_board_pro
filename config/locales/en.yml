@@ -1,3 +1,11 @@
-# English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  field_sprint: Sprint
+  field_story_points: Story Points
+  field_board_position: Board Position
+  label_agile_board: Agile Board
+  label_manage_sprints: Manage Sprints
+  label_sprint_plural: Sprints
+  label_sprint_new: New Sprint
+  permission_view_agile_board: View Agile Board
+  permission_edit_agile_board: Edit Agile Board
+  permission_manage_sprints: Manage Sprints
