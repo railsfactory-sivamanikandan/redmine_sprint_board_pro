@@ -10,11 +10,17 @@ class Sprint < ApplicationRecord
   def self.smart_backlog_candidates(project, limit: 10)
     recent_sprint = project.sprints.order(end_date: :desc).first
 
-    Issue
-      .where(project: project)
+    return Issue.where(project_id: project.id)
+              .where(status: IssueStatus.where(is_closed: false))
+              .where(sprint_id: nil)
+              .limit(limit) if recent_sprint.nil?
+
+    Issue.where(project_id: project.id)
       .where(status: IssueStatus.where(is_closed: false))
-      .where('due_date <= ?', 1.week.from_now)
-      .or(Issue.where(id: recent_sprint.issues.where(status: IssueStatus.where(is_closed: false)).pluck(:id)))
+      .where(sprint_id: nil)
+      .or(Issue.where(id: recent_sprint.issues
+                                  .where(status: IssueStatus.where(is_closed: false))
+                                  .pluck(:id)))
       .order(priority_id: :desc, updated_on: :desc)
       .limit(limit)
   end
