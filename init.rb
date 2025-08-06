@@ -21,19 +21,10 @@ Redmine::Plugin.register :redmine_sprint_board_pro do
   menu :project_menu, :sprints, { controller: 'sprints', action: 'index' }, caption: 'Manage Sprints', after: :agile_board, param: :project_id
 end
 
-# Load patches after Redmine has been initialized
-Rails.configuration.to_prepare do
-  # Load the patches
-  require File.expand_path('../lib/redmine_sprint_board_pro/project_patch', __FILE__)
-  require File.expand_path('../lib/redmine_sprint_board_pro/issue_patch', __FILE__)
-  # Load hooks
-  require File.expand_path('../hooks/view_issues_form_details_bottom_hook', __FILE__)
-  require File.expand_path('../hooks/view_issues_show_hook', __FILE__)
-  # Apply patches to models
-  unless Project.included_modules.include?(RedmineSprintBoardPro::ProjectPatch)
-    Project.send(:include, RedmineSprintBoardPro::ProjectPatch)
-  end
-  unless Issue.included_modules.include?(RedmineSprintBoardPro::IssuePatch)
-    Issue.send(:include, RedmineSprintBoardPro::IssuePatch)
-  end
-end
+require_dependency 'project'
+require_relative 'hooks/view_issues_form_details_bottom_hook'
+require_relative 'hooks/view_issues_show_hook'
+require_relative 'lib/redmine_sprint_board_pro/project_patch'
+require_relative 'lib/redmine_sprint_board_pro/issue_patch'
+Project.include RedmineSprintBoardPro::ProjectPatch unless Project.included_modules.include?(RedmineSprintBoardPro::ProjectPatch)
+Issue.include RedmineSprintBoardPro::IssuePatch unless Issue.included_modules.include?(RedmineSprintBoardPro::IssuePatch)
