@@ -5,7 +5,7 @@ class AgileBoardController < ApplicationController
     @sprints = Sprint.where(project_id: @project.id).order(start_date: :desc)
     @selected_sprint = Sprint.find_by(id: params[:sprint_id]) || @sprints.first
     @statuses = IssueStatus.sorted
-    @issues = @project.issues.where(sprint_id: @selected_sprint&.id).includes(:assigned_to, :status).group_by(&:status)
+    @issues = @project.issues.where(sprint_id: @selected_sprint&.id).order(:board_position).includes(:assigned_to, :status).group_by(&:status)
   end
 
   def update_status
@@ -22,6 +22,13 @@ class AgileBoardController < ApplicationController
     @issue.sprint_id = params[:sprint_id]
     @issue.save
     head :ok
+  end
+
+  def update_positions
+    params[:issue_ids].each_with_index do |issue_id, index|
+      Issue.where(id: issue_id).update_all(board_position: index)
+    end
+    render json: { success: true }
   end
 
   private

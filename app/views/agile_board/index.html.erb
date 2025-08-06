@@ -28,7 +28,7 @@
       <div class="status-header">
         <h3><%= status.name %></h3>
       </div>
-      <div class="card-list">
+      <div class="card-list droppable-area" data-status-id="<%= status.id %>">
         <% (@issues[status] || []).each do |issue| %>
           <% priority_name = issue.priority.try(:name).to_s.parameterize %>
           <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>">

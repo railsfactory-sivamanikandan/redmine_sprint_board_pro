@@ -50,3 +50,26 @@ function initDragDrop({ cardSelector, dropSelector, dataKey, dropTargetAttr, url
     });
   });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+  const projectId = window.projectIdentifier;
+  document.querySelectorAll(".card-list").forEach(list => {
+    new Sortable(list, {
+      group: "cards",
+      animation: 150,
+      onEnd: function () {
+        const issueIds = Array.from(list.querySelectorAll(".card")).map(card => card.dataset.id);
+
+        fetch(`/projects/${projectId}/agile_board/update_positions`, {
+          method: "POST",
+          headers: {
+            'X-CSRF-Token': csrfToken,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ issue_ids: issueIds })
+        });
+      }
+    });
+  });
+});
