@@ -38,7 +38,7 @@
         <% if @sprint.issues.any? %>
           <% @sprint.issues.each do |issue| %>
             <tr class="sprint-card" draggable="true" data-id="<%= issue.id %>">
-              <td><strong><%= link_to "##{issue.id}", issue_path(issue) %></strong></td>
+              <td><strong><%= link_to issue.id, issue_path(issue) %></strong></td>
               <td><%= issue.subject %></td>
               <td><%= issue.status.name %></td>
               <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
@@ -75,7 +75,7 @@
         <% if unassigned.any? %>
           <% unassigned.each do |issue| %>
             <tr class="sprint-card" draggable="true" data-id="<%= issue.id %>">
-              <td><strong><%= link_to "##{issue.id}", issue_path(issue) %></strong></td>
+              <td><strong><%= link_to issue.id, issue_path(issue) %></strong></td>
               <td><%= issue.subject %></td>
               <td><%= issue.status.name %></td>
               <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
