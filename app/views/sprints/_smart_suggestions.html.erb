@@ -13,7 +13,7 @@
     <% Sprint.smart_backlog_candidates(@project).each do |issue| %>
       <tr>
         <td><%= check_box_tag "issue_ids[]", issue.id %></td>
-        <td><%= %= link_to issue.subject, issue_path(issue) %></td>
+        <td><%= link_to issue.subject, issue_path(issue) %></td>
         <td><%= issue.status.name %></td>
         <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
         <td><%= issue.story_points || 0 %></td>
