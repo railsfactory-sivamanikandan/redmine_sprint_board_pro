@@ -43,6 +43,7 @@
         <td>
           <%= link_to 'Edit', edit_project_sprint_path(@project, sprint), class: 'icon icon-edit' %>
           <%= link_to 'Delete', project_sprint_path(@project, sprint), method: :delete, data: { confirm: 'Are you sure?' }, class: 'icon icon-del' %>
+          <%= link_to '📊 Dashboard', dashboard_project_sprint_path(@project,sprint), class: 'icon icon-chart-bar' %>
           <% if sprint.completed? %>
             <%= link_to 'Mark as Active', toggle_completed_project_sprint_path(@project, sprint), method: :patch, class: 'icon icon-checked', data: { turbo: false } %>
           <% else %>

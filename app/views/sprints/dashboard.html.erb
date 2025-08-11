@@ -1,85 +1,130 @@
-<h1>Sprint Dashboard - <%= @sprint.name %></h1>
+<%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
+<h1 class="rsbp-title">Sprint Dashboard - <%= @sprint.name %></h1>
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px;">
-  <!-- Velocity Chart -->
-  <div style="flex: 1; min-width: 400px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <h3>Velocity</h3>
-    <canvas id="velocityChart"></canvas>
+<div class="rsbp-grid">
+  <!-- KPI Cards -->
+  <div class="card kpi">
+    <div class="kpi-title">Total Points</div>
+    <div class="kpi-value"><%= @velocity[:total] %> SP</div>
   </div>
 
-  <!-- Burndown Chart -->
-  <div style="flex: 2; min-width: 500px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <h3>Burndown</h3>
-    <canvas id="burndownChart"></canvas>
+  <div class="card kpi">
+    <div class="kpi-title">Closed Points</div>
+    <div class="kpi-value"><%= @velocity[:closed] %> SP</div>
+  </div>
+
+  <div class="card kpi">
+    <div class="kpi-title">Completion Rate</div>
+    <% completion_rate = (@velocity[:total].to_f.zero? ? 0 : ((@velocity[:closed].to_f / @velocity[:total].to_f) * 100).round(2)) %>
+    <div class="kpi-value"><%= "#{completion_rate}%" %></div>
+    <div class="progress-bar">
+      <div class="progress-bar-fill" style="width:<%= completion_rate %>%"></div>
+    </div>
+  </div>
+
+  <div class="card kpi">
+    <div class="kpi-title">Remaining Points</div>
+    <div class="kpi-value"><%= (@velocity[:total].to_f - @velocity[:closed].to_f).round(2) %> SP</div>
+  </div>
+
+  <div class="card kpi">
+    <div class="kpi-title">Days Remaining</div>
+    <% days_left = (@sprint.end_date - Date.today).to_i rescue 0 %>
+    <div class="kpi-value"><%= days_left > 0 ? "#{days_left} days" : "Ended" %></div>
+  </div>
+
+  <div class="card kpi">
+    <div class="kpi-title">Open Issues</div>
+    <div class="kpi-value"><%= @sprint.issues.open.count rescue 0 %></div>
   </div>
 </div>
 
-<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-  <!-- Open vs Closed Issues -->
-  <div style="flex: 1; min-width: 400px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <h3>Open vs Closed Issues</h3>
-    <canvas id="issuesStatusChart"></canvas>
+  <!-- Charts -->
+<div class="rsbp-grid" style="margin-top: 20px;">
+  <div class="card large">
+    <div class="card-header">Velocity</div>
+    <canvas id="velocityChart" class="chart-small"></canvas>
   </div>
 
-  <!-- Story Points Completion -->
-  <div style="flex: 1; min-width: 400px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <h3>Story Points Completion</h3>
-    <canvas id="storyPointsChart"></canvas>
+  <div class="card large">
+    <div class="card-header">Burndown</div>
+    <canvas id="burndownChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="card large">
+    <div class="card-header">Cumulative Flow Diagram</div>
+    <canvas id="cfdChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="card large">
+    <div class="card-header">Open vs Closed Issues</div>
+    <canvas id="openClosedChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="card large">
+    <div class="card-header">Issue Type Breakdown</div>
+    <canvas id="issueTypeChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="card large">
+    <div class="card-header">Team Contribution</div>
+    <canvas id="teamChart" class="chart-small"></canvas>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<%= javascript_include_tag 'chart4', plugin: 'redmine_sprint_board_pro' %>
 <script>
-  // Velocity Chart
+  const velocity = <%= raw @velocity.to_json %>;
+  const burndown = <%= raw @burndown.to_json %>;
+  const cfd = <%= raw @cfd.to_json %>;
+  const team = <%= raw @team.to_json %>;
+  const issue_types = <%= raw @issue_types.to_json %>;
+  const openClosed = <%= raw @open_closed.to_json %>;
+
+  const palette = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f','#edc949','#af7aa1','#ff9da7','#9c755f','#bab0ab'];
+
   new Chart(document.getElementById('velocityChart'), {
     type: 'bar',
     data: {
-      labels: ['Total Points', 'Closed Points'],
-      datasets: [{
-        data: [<%= @velocity_total %>, <%= @velocity_closed %>],
-        backgroundColor: ['#3498db', '#2ecc71']
-      }]
+      labels: ['Total Points','Closed Points'],
+      datasets: [{ data: [velocity.total || 0, velocity.closed || 0], backgroundColor: [palette[0], palette[2]] }]
     },
-    options: { responsive: true, plugins: { legend: { display: false } } }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
   });
 
-  // Burndown Chart
   new Chart(document.getElementById('burndownChart'), {
     type: 'line',
     data: {
-      labels: <%= raw @burndown_data.map { |d| d[0].strftime('%Y-%m-%d') }.to_json %>,
-      datasets: [{
-        label: 'Remaining Points',
-        data: <%= raw @burndown_data.map(&:last).to_json %>,
-        borderColor: '#e74c3c',
-        fill: false,
-        tension: 0.2
-      }]
+      labels: burndown.map(d => d[0]),
+      datasets: [{ label: 'Remaining Points', data: burndown.map(d => d[1]), borderColor: '#e15759', fill: false, tension: 0.2 }]
     },
-    options: { responsive: true }
+    options: { responsive: true, maintainAspectRatio: false }
   });
 
-  // Issues Status Chart
-  new Chart(document.getElementById('issuesStatusChart'), {
-    type: 'pie',
-    data: {
-      labels: ['Open', 'Closed'],
-      datasets: [{
-        data: [<%= @open_issues_count %>, <%= @closed_issues_count %>],
-        backgroundColor: ['#f39c12', '#27ae60']
-      }]
-    }
+  const cfdDatasets = (cfd.datasets || []).map((ds, idx) => ({
+    label: ds.label, data: ds.data, backgroundColor: palette[idx % palette.length], fill: true, tension: 0.2
+  }));
+  new Chart(document.getElementById('cfdChart'), {
+    type: 'line',
+    data: { labels: cfd.labels || [], datasets: cfdDatasets },
+    options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
   });
 
-  // Story Points Completion Chart
-  new Chart(document.getElementById('storyPointsChart'), {
+  new Chart(document.getElementById('openClosedChart'), {
     type: 'doughnut',
-    data: {
-      labels: ['Completed Points', 'Remaining Points'],
-      datasets: [{
-        data: [<%= @closed_story_points %>, <%= @total_story_points - @closed_story_points %>],
-        backgroundColor: ['#2ecc71', '#e67e22']
-      }]
-    }
+    data: { labels: ['Open','Closed'], datasets: [{ data: [openClosed.open_count || 0, openClosed.closed_count || 0], backgroundColor: [palette[1], palette[2]] }] },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  new Chart(document.getElementById('issueTypeChart'), {
+    type: 'doughnut',
+    data: { labels: issue_types.map(i => i.tracker_name), datasets: [{ data: issue_types.map(i => i.points), backgroundColor: issue_types.map((_, i) => palette[i % palette.length]) }] },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  new Chart(document.getElementById('teamChart'), {
+    type: 'bar',
+    data: { labels: team.map(t => t.user_name), datasets: [{ data: team.map(t => t.points), backgroundColor: team.map((_, i) => palette[i % palette.length]) }] },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
   });
 </script>

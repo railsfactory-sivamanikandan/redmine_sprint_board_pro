@@ -6,8 +6,6 @@ RedmineApp::Application.routes.draw do
     resources :sprints do
       member do
         patch :toggle_completed
-        get :burndown
-        get :velocity
         get :dashboard
       end
     end

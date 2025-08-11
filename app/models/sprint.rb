@@ -37,4 +37,28 @@ class Sprint < ApplicationRecord
   def total_points
     issues.sum(:story_points) || 0
   end
+
+  def burndown_data
+    return [] unless start_date.present? && end_date.present?
+    # total story points at sprint start
+    total_points = issues.sum(:story_points) || 0
+
+    # Date range – inclusive
+    days = (start_date.to_date..end_date.to_date).to_a
+
+    # For performance: detect closed statuses once
+    # (assumes Issue has association :status and issue_statuses table has is_closed boolean)
+    days.map do |day|
+      # closed story points up to and including `day`
+      closed_points = issues
+                      .joins(:status)
+                      .where(issue_statuses: { is_closed: true })
+                      .where("issues.updated_on <= ?", day.end_of_day)
+                      .sum(:story_points) || 0
+
+      remaining = total_points - closed_points
+      remaining = 0 if remaining.negative?
+      [day, remaining]
+    end
+  end
 end

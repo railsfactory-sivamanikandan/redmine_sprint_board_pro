@@ -19,7 +19,6 @@ Redmine::Plugin.register :redmine_sprint_board_pro do
 
   menu :project_menu, :agile_board, { controller: 'agile_board', action: 'index' }, caption: 'Agile Board', after: :activity, param: :project_id
   menu :project_menu, :sprints, { controller: 'sprints', action: 'index' }, caption: 'Manage Sprints', after: :agile_board, param: :project_id
-  menu :project_menu, :sprint_dashboard, { controller: 'sprints', action: 'dashboard' }, caption: 'Sprint Dashboard', after: :sprints, param: :project_id
 end
 
 require_dependency 'project'

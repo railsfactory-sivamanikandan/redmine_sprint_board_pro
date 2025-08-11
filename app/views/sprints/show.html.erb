@@ -13,10 +13,6 @@
   <p><strong>📈 Total Story Points:</strong> <%= @sprint.total_points %></p>
   <p><strong>✅ Completed Points:</strong> <%= @sprint.completed_points %></p>
   <p><strong>📊 Progress:</strong> <%= sprint_progress_percent(@sprint) %>%</p>
-  <p>
-    <%= link_to '📉 View Burndown Chart', burndown_project_sprint_path(@project, @sprint), class: 'icon' %><br/>
-    <%= link_to '📊 Velocity Chart', velocity_project_sprint_path(@project, @sprint), class: 'icon' %>
-  </p>
 </div>
 
 <div class="drag-container">
