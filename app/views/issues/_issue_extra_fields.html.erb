@@ -19,9 +19,16 @@
 <% end %>
 
 <% if @project.module_enabled?(:agile_board) && issue.tags.any? %>
-  <div class="tags">
-    <% issue.tags.each do |tag| %>
-      <span class="tag"><%= tag.name %></span>
-    <% end %>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <div class="sprint attribute">
+        <div class="label">Tags</div>
+        <div>
+          <% issue.tags.each_with_index do |tag, i| %>
+            <span class="issue-tag color-<%= (i % 5) + 1 %>"><%= tag %></span>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 <% end %>

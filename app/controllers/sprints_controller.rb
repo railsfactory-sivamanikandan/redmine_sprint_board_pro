@@ -3,11 +3,19 @@ class SprintsController < ApplicationController
   before_action :find_sprint, only: [:show, :edit, :update, :destroy, :toggle_completed, :dashboard]
   include SprintsHelper
   def index
+    status = params[:status]
+    tag = params[:tag]
     @status_filter = params[:status]
 
     scope = @project.sprints.order(created_at: :desc)
-    scope = scope.where(completed: false) if @status_filter == 'active'
-    scope = scope.where(completed: true) if @status_filter == 'completed'
+    if status.present?
+      scope = scope.where(completed: false) if @status_filter == 'active'
+      scope = scope.where(completed: true) if @status_filter == 'completed'
+    end
+
+    if tag.present?
+      scope = scope.joins(:issues).merge(Issue.tagged_with(tag)).distinct
+    end
 
     respond_to do |format|
       format.html do

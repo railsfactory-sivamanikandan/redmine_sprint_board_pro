@@ -1,0 +1,46 @@
+/* Style for individual tags */
+.issue-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.issue-tag {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Example color palette for tags */
+.issue-tag.color-0 { background-color: #4e79a7; }
+.issue-tag.color-1 { background-color: #3498db; } /* blue */
+.issue-tag.color-2 { background-color: #2ecc71; } /* green */
+.issue-tag.color-3 { background-color: #e67e22; } /* orange */
+.issue-tag.color-4 { background-color: #9b59b6; } /* purple */
+.issue-tag.color-5 { background-color: #e74c3c; } /* red */
+.issue-tag.color-6 { background-color: #af7aa1; }
+.issue-tag.color-7 { background-color: #ff9da7; }
+.issue-tag.color-8 { background-color: #9c755f; }
+.issue-tag.color-9 { background-color: #bab0ab; }
+
+/* Tag input (autocomplete) */
+.tag-input {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.issue-tag {
+  display: inline-block;
+  padding: 2px 6px;
+  margin: 2px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 4px;
+}

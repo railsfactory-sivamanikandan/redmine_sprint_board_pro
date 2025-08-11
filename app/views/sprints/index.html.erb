@@ -16,6 +16,16 @@
       <option value="active" <%= 'selected' if params[:status] == 'active' %>>Active</option>
       <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Completed</option>
     </select>
+
+    <label for="tag_filter">Tag:</label>
+    <select name="tag" id="tag_filter" onchange="this.form.submit()">
+      <option value="">All Tags</option>
+      <% Issue.tag_counts.each do |tag| %>
+        <option value="<%= tag.name %>" <%= 'selected' if params[:tag] == tag.name %>>
+          <%= tag.name %>
+        </option>
+      <% end %>
+    </select>
   </div>
 <% end %>
 

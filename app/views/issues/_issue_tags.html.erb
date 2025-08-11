@@ -1,5 +1,3 @@
 <p>
-  <label>Tags</label>
-  <%= text_field_tag 'issue[tag_list]', @issue.tag_list.join(", "), placeholder: "e.g. Backend, UI, Urgent" %>
-  <small>Separate tags with commas</small>
+  <%= f.select :tag_list, @issue.tag_list,{}, multiple: true, class: "tag-input", style: "width: 100%;" %>
 </p>

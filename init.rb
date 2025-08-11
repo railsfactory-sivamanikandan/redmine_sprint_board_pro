@@ -22,7 +22,9 @@ Redmine::Plugin.register :redmine_sprint_board_pro do
 end
 
 require_dependency 'project'
+require_relative 'hooks/view_layout_hooks'
 require_relative 'hooks/view_issues_form_details_bottom_hook'
+require_relative 'hooks/view_issues_form_tags_hook'
 require_relative 'hooks/view_issues_show_hook'
 require_relative 'lib/redmine_sprint_board_pro/project_patch'
 require_relative 'lib/redmine_sprint_board_pro/issue_patch'
