@@ -26,5 +26,7 @@ require_relative 'hooks/view_issues_form_details_bottom_hook'
 require_relative 'hooks/view_issues_show_hook'
 require_relative 'lib/redmine_sprint_board_pro/project_patch'
 require_relative 'lib/redmine_sprint_board_pro/issue_patch'
+require_relative 'lib/redmine_sprint_board_pro/issues_controller_patch'
 Project.include RedmineSprintBoardPro::ProjectPatch unless Project.included_modules.include?(RedmineSprintBoardPro::ProjectPatch)
 Issue.include RedmineSprintBoardPro::IssuePatch unless Issue.included_modules.include?(RedmineSprintBoardPro::IssuePatch)
+IssuesController.include RedmineSprintBoardPro::IssuesControllerPatch unless IssuesController.included_modules.include?(RedmineSprintBoardPro::IssuesControllerPatch)

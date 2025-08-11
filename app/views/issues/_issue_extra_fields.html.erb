@@ -17,3 +17,11 @@
     </div>
   </div>
 <% end %>
+
+<% if @project.module_enabled?(:agile_board) && issue.tags.any? %>
+  <div class="tags">
+    <% issue.tags.each do |tag| %>
+      <span class="tag"><%= tag.name %></span>
+    <% end %>
+  </div>
+<% end %>
