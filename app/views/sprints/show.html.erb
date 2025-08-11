@@ -14,6 +14,7 @@
   <p><strong>📈 Total Story Points:</strong> <%= @sprint.total_points %></p>
   <p><strong>✅ Completed Points:</strong> <%= @sprint.completed_points %></p>
   <p><strong>📊 Progress:</strong> <%= sprint_progress_percent(@sprint) %>%</p>
+  <p><%= link_to '📊 Dashboard', dashboard_project_sprint_path(@project,@sprint), class: 'icon icon-chart-bar' %></p>
 </div>
 
 <div class="drag-container">
