@@ -1,4 +1,5 @@
 <%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
+<%= stylesheet_link_tag 'tags', plugin: 'redmine_sprint_board_pro' %>
 
 <% content_for :header_tags do %>
   <meta name="csrf-token" content="<%= form_authenticity_token %>">
@@ -13,10 +14,6 @@
   <p><strong>📈 Total Story Points:</strong> <%= @sprint.total_points %></p>
   <p><strong>✅ Completed Points:</strong> <%= @sprint.completed_points %></p>
   <p><strong>📊 Progress:</strong> <%= sprint_progress_percent(@sprint) %>%</p>
-  <p>
-    <%= link_to '📉 View Burndown Chart', burndown_project_sprint_path(@project, @sprint), class: 'icon' %><br/>
-    <%= link_to '📊 Velocity Chart', velocity_project_sprint_path(@project, @sprint), class: 'icon' %>
-  </p>
 </div>
 
 <div class="drag-container">
@@ -31,6 +28,7 @@
           <th>Status</th>
           <th>Assigned To</th>
           <th>Story Points</th>
+          <th>Tags</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -43,6 +41,15 @@
               <td><%= issue.status.name %></td>
               <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
               <td><%= issue.story_points || 0 %></td>
+              <td>
+                <% if issue.tags.any? %>
+                  <% issue.tags.each_with_index do |tag, i| %>
+                    <span class="issue-tag color-<%= (i % 5) + 1 %>"><%= tag %></span>
+                  <% end %>
+                <% else %>
+                  -
+                <% end %>
+              </td>
               <td class="action-cell">
                 <%= link_to 'Remove', update_sprint_project_agile_board_path(@project, id: issue.id, sprint_id: ''),
                             class: 'icon icon-del remove-sprint-link', title: 'Remove from Sprint' %>
@@ -67,6 +74,7 @@
           <th>Status</th>
           <th>Assigned To</th>
           <th>Story Points</th>
+          <th>Tags</th>
         </tr>
       </thead>
       <tbody id="unassigned-issues" class="sprint-droppable-area" data-sprint="">
@@ -79,6 +87,11 @@
               <td><%= issue.status.name %></td>
               <td><%= issue.assigned_to&.name || 'Unassigned' %></td>
               <td><%= issue.story_points || 0 %></td>
+              <td>
+                <% issue.tags.each_with_index do |tag, i| %>
+                  <span class="issue-tag color-<%= (i % 5) + 1 %>"><%= tag %></span>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         <% else %>

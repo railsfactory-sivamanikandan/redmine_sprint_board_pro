@@ -1,13 +1,21 @@
 class SprintsController < ApplicationController
   before_action :find_project
-  before_action :find_sprint, only: [:show, :edit, :update, :destroy, :toggle_completed, :burndown, :velocity]
+  before_action :find_sprint, only: [:show, :edit, :update, :destroy, :toggle_completed, :dashboard]
   include SprintsHelper
   def index
+    status = params[:status]
+    tag = params[:tag]
     @status_filter = params[:status]
 
     scope = @project.sprints.order(created_at: :desc)
-    scope = scope.where(completed: false) if @status_filter == 'active'
-    scope = scope.where(completed: true) if @status_filter == 'completed'
+    if status.present?
+      scope = scope.where(completed: false) if @status_filter == 'active'
+      scope = scope.where(completed: true) if @status_filter == 'completed'
+    end
+
+    if tag.present?
+      scope = scope.joins(:issues).merge(Issue.tagged_with(tag)).distinct
+    end
 
     respond_to do |format|
       format.html do
@@ -70,34 +78,15 @@ class SprintsController < ApplicationController
     redirect_to project_sprints_path(@project)
   end
 
-  def burndown
-    start_date = @sprint.start_date
-    end_date = @sprint.end_date
-
-    total_points = @sprint.total_points
-
-    daily_data = (start_date..end_date).map do |day|
-      completed = @sprint.issues.
-        where('closed_on IS NOT NULL AND closed_on <= ?', day).
-        sum(:story_points) || 0
-
-      remaining = total_points - completed
-      [day, remaining < 0 ? 0 : remaining]
-    end
-
-    @burndown_data = daily_data
-  end
-
-  def velocity
-    @issues = @sprint.issues
-
-    @total_points = @issues.sum { |i| i.story_points.to_i }
-    @closed_points = @issues.select(&:closed?).sum(&:story_points)
-
-    respond_to do |format|
-      format.html
-      format.json { render json: { total: @total_points, closed: @closed_points } }
-    end
+  def dashboard
+    render_403 unless User.current.allowed_to?(:view_agile_board, @project)
+    service = SprintService.new(@sprint)
+    @burndown = service.burndown_series            # [[date, remaining], ...]
+    @velocity = service.velocity_metrics           # { total:, closed: }
+    @cfd = service.cfd_series                      # { labels: [...], datasets: [...] }
+    @team = service.team_contribution              # [{user_name:, points:}, ...]
+    @issue_types = service.issue_type_breakdown    # [{tracker_name:, points:}, ...]
+    @open_closed = service.open_closed_counts
   end
 
   private

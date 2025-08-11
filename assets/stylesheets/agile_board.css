@@ -208,3 +208,82 @@
   border: 2px solid red;
   background-color: #ffeaea;
 }
+
+.rsbp-title {
+  margin-bottom: 15px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.rsbp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.dashboard-card {
+  background: #fafbfc;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dashboard-card-header {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.kpi {
+  text-align: center;
+  background: #f9fafc;
+}
+
+.kpi-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.kpi-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: #eee;
+  border-radius: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: #4e79a7;
+}
+
+.chart-container {
+  height: 280px;
+}
+
+@media (max-width: 768px) {
+  .large {
+    grid-column: span 1;
+    height: 250px;
+  }
+}
+
+.large {
+  grid-column: span 2;
+  min-height: 320px;
+  max-height: 350px; /* prevents it from growing too tall */
+}
+
+/* Also control the canvas itself */
+.card canvas {
+  max-height: 100%;
+  width: 100% !important;
+}

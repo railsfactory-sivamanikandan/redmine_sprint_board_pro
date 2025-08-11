@@ -6,10 +6,10 @@ RedmineApp::Application.routes.draw do
     resources :sprints do
       member do
         patch :toggle_completed
-        get :burndown
-        get :velocity
+        get :dashboard
       end
     end
   end
+  get 'tags/autocomplete', to: 'tags#autocomplete'
   post 'projects/:project_id/agile_board/update_sprint', to: 'agile_board#update_sprint', as: 'update_sprint_project_agile_board'
 end

@@ -1,4 +1,5 @@
 <%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
+<%= stylesheet_link_tag 'tags', plugin: 'redmine_sprint_board_pro' %>
 <% content_for :header_tags do %>
   <meta name="csrf-token" content="<%= form_authenticity_token %>">
   <script>
@@ -38,7 +39,10 @@
             <div class="card-title">#<%= issue.id %>: <%= issue.subject %></div>
             <div class="card-meta">
               <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span><br>
-              <span>🎯 <%= issue.story_points || 0 %> pts</span>
+              <span>🎯 <%= issue.story_points || 0 %> pts</span><br />
+              <% issue.tag_list.each_with_index do |tag, idx| %>
+                <span class="issue-tag color-<%= idx % 10 %>"><%= tag %></span>
+              <% end %>
             </div>
           </div>
         <% end %>
