@@ -1,0 +1,85 @@
+<h1>Sprint Dashboard - <%= @sprint.name %></h1>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+  <!-- Velocity Chart -->
+  <div style="flex: 1; min-width: 400px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <h3>Velocity</h3>
+    <canvas id="velocityChart"></canvas>
+  </div>
+
+  <!-- Burndown Chart -->
+  <div style="flex: 2; min-width: 500px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <h3>Burndown</h3>
+    <canvas id="burndownChart"></canvas>
+  </div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
+  <!-- Open vs Closed Issues -->
+  <div style="flex: 1; min-width: 400px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <h3>Open vs Closed Issues</h3>
+    <canvas id="issuesStatusChart"></canvas>
+  </div>
+
+  <!-- Story Points Completion -->
+  <div style="flex: 1; min-width: 400px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <h3>Story Points Completion</h3>
+    <canvas id="storyPointsChart"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Velocity Chart
+  new Chart(document.getElementById('velocityChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Total Points', 'Closed Points'],
+      datasets: [{
+        data: [<%= @velocity_total %>, <%= @velocity_closed %>],
+        backgroundColor: ['#3498db', '#2ecc71']
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+  });
+
+  // Burndown Chart
+  new Chart(document.getElementById('burndownChart'), {
+    type: 'line',
+    data: {
+      labels: <%= raw @burndown_data.map { |d| d[0].strftime('%Y-%m-%d') }.to_json %>,
+      datasets: [{
+        label: 'Remaining Points',
+        data: <%= raw @burndown_data.map(&:last).to_json %>,
+        borderColor: '#e74c3c',
+        fill: false,
+        tension: 0.2
+      }]
+    },
+    options: { responsive: true }
+  });
+
+  // Issues Status Chart
+  new Chart(document.getElementById('issuesStatusChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Open', 'Closed'],
+      datasets: [{
+        data: [<%= @open_issues_count %>, <%= @closed_issues_count %>],
+        backgroundColor: ['#f39c12', '#27ae60']
+      }]
+    }
+  });
+
+  // Story Points Completion Chart
+  new Chart(document.getElementById('storyPointsChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Completed Points', 'Remaining Points'],
+      datasets: [{
+        data: [<%= @closed_story_points %>, <%= @total_story_points - @closed_story_points %>],
+        backgroundColor: ['#2ecc71', '#e67e22']
+      }]
+    }
+  });
+</script>

@@ -100,6 +100,26 @@ class SprintsController < ApplicationController
     end
   end
 
+  def dashboard
+    @project = Project.find(params[:project_id])
+    @sprint = @project.sprints.find(params[:id])
+
+    # Burndown Data
+    @burndown_data = SprintService.new(@sprint).burndown_points
+
+    # Velocity Data
+    velocity = SprintService.new(@sprint).velocity
+    @velocity_total = velocity[:total]
+    @velocity_closed = velocity[:closed]
+
+    # Extra Metrics
+    @open_issues_count = @sprint.issues.open.count
+    @closed_issues_count = @sprint.issues.closed.count
+    @total_story_points = @sprint.issues.sum(:story_points)
+    @closed_story_points = @sprint.issues.closed.sum(:story_points)
+    @team_members = @sprint.issues.group(:assigned_to_id).count
+  end
+
   private
 
   def find_project

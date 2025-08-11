@@ -8,6 +8,7 @@ RedmineApp::Application.routes.draw do
         patch :toggle_completed
         get :burndown
         get :velocity
+        get :dashboard
       end
     end
   end
