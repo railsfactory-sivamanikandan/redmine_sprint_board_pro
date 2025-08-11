@@ -3,17 +3,17 @@
 
 <div class="rsbp-grid">
   <!-- KPI Cards -->
-  <div class="card kpi">
+  <div class="dashboard-card kpi">
     <div class="kpi-title">Total Points</div>
     <div class="kpi-value"><%= @velocity[:total] %> SP</div>
   </div>
 
-  <div class="card kpi">
+  <div class="dashboard-card kpi">
     <div class="kpi-title">Closed Points</div>
     <div class="kpi-value"><%= @velocity[:closed] %> SP</div>
   </div>
 
-  <div class="card kpi">
+  <div class="dashboard-card kpi">
     <div class="kpi-title">Completion Rate</div>
     <% completion_rate = (@velocity[:total].to_f.zero? ? 0 : ((@velocity[:closed].to_f / @velocity[:total].to_f) * 100).round(2)) %>
     <div class="kpi-value"><%= "#{completion_rate}%" %></div>
@@ -22,18 +22,18 @@
     </div>
   </div>
 
-  <div class="card kpi">
+  <div class="dashboard-card kpi">
     <div class="kpi-title">Remaining Points</div>
     <div class="kpi-value"><%= (@velocity[:total].to_f - @velocity[:closed].to_f).round(2) %> SP</div>
   </div>
 
-  <div class="card kpi">
+  <div class="dashboard-card kpi">
     <div class="kpi-title">Days Remaining</div>
     <% days_left = (@sprint.end_date - Date.today).to_i rescue 0 %>
     <div class="kpi-value"><%= days_left > 0 ? "#{days_left} days" : "Ended" %></div>
   </div>
 
-  <div class="card kpi">
+  <div class="dashboard-card kpi">
     <div class="kpi-title">Open Issues</div>
     <div class="kpi-value"><%= @sprint.issues.open.count rescue 0 %></div>
   </div>
@@ -41,33 +41,33 @@
 
   <!-- Charts -->
 <div class="rsbp-grid" style="margin-top: 20px;">
-  <div class="card large">
-    <div class="card-header">Velocity</div>
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Velocity</div>
     <canvas id="velocityChart" class="chart-small"></canvas>
   </div>
 
-  <div class="card large">
-    <div class="card-header">Burndown</div>
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Burndown</div>
     <canvas id="burndownChart" class="chart-small"></canvas>
   </div>
 
-  <div class="card large">
-    <div class="card-header">Cumulative Flow Diagram</div>
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Cumulative Flow Diagram</div>
     <canvas id="cfdChart" class="chart-small"></canvas>
   </div>
 
-  <div class="card large">
-    <div class="card-header">Open vs Closed Issues</div>
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Open vs Closed Issues</div>
     <canvas id="openClosedChart" class="chart-small"></canvas>
   </div>
 
-  <div class="card large">
-    <div class="card-header">Issue Type Breakdown</div>
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Issue Type Breakdown</div>
     <canvas id="issueTypeChart" class="chart-small"></canvas>
   </div>
 
-  <div class="card large">
-    <div class="card-header">Team Contribution</div>
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Team Contribution</div>
     <canvas id="teamChart" class="chart-small"></canvas>
   </div>
 </div>

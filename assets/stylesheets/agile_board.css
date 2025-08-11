@@ -221,7 +221,7 @@
   gap: 16px;
 }
 
-.card {
+.dashboard-card {
   background: #fafbfc;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
@@ -231,7 +231,7 @@
   justify-content: center;
 }
 
-.card-header {
+.dashboard-card-header {
   font-weight: bold;
   margin-bottom: 8px;
 }
@@ -269,13 +269,9 @@
   height: 280px;
 }
 
-.chart-small {
-  flex: 1;
-  height: 100% !important;
-}
-
 @media (max-width: 768px) {
-  .chart-card {
+  .large {
+    grid-column: span 1;
     height: 250px;
   }
 }
