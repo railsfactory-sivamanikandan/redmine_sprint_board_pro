@@ -19,6 +19,13 @@ Redmine::Plugin.register :redmine_sprint_board_pro do
 
   menu :project_menu, :agile_board, { controller: 'agile_board', action: 'index' }, caption: 'Agile Board', after: :activity, param: :project_id
   menu :project_menu, :sprints, { controller: 'sprints', action: 'index' }, caption: 'Manage Sprints', after: :agile_board, param: :project_id
+
+  settings default: {
+    'notify_on_sprint_completed' => '0',
+    'monthly_report_enabled' => '0',
+    'monthly_report_day' => '1',
+    'monthly_report_receivers' => ''
+  }, partial: 'settings/sprint_board_pro_settings'
 end
 
 require_dependency 'project'

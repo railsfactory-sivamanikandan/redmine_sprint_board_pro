@@ -12,6 +12,13 @@ module RedmineSprintBoardPro
         def completed_sprints
           sprints.where(status: 'completed')
         end
+
+        def manager
+          manager_role = Role.find_by(name: 'Manager')
+          return nil unless manager_role
+          member = members.joins(:roles).find_by(roles: { id: manager_role.id })
+          member&.user
+        end
       end
       Rails.logger.info '[SprintBoardPro] ProjectPatch successfully applied' if defined?(Rails)
     end

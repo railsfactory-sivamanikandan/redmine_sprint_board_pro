@@ -2,6 +2,7 @@ class SprintsController < ApplicationController
   before_action :find_project
   before_action :find_sprint, only: [:show, :edit, :update, :destroy, :toggle_completed, :dashboard]
   include SprintsHelper
+  include SprintEmailHelper
   def index
     status = params[:status]
     tag = params[:tag]
@@ -74,7 +75,9 @@ class SprintsController < ApplicationController
   end
 
   def toggle_completed
-    @sprint.update(completed: !@sprint.completed)
+    was_completed = @sprint.completed?
+    @sprint.update(completed: !was_completed)
+    send_sprint_completed_email(@sprint) if @sprint.completed?
     redirect_to project_sprints_path(@project)
   end
 

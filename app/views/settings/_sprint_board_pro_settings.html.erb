@@ -1,0 +1,26 @@
+<fieldset class="box">
+  <legend>Notifications & Reports</legend>
+
+  <p>
+    <%= label_tag 'settings[notify_on_sprint_completed]', 'Notify on sprint completion' %>
+    <%= check_box_tag 'settings[notify_on_sprint_completed]', '1', Setting.plugin_redmine_sprint_board_pro['notify_on_sprint_completed'] == '1' %>
+    <span class="description">Send email when a sprint is marked as completed.</span>
+  </p>
+
+  <p>
+    <%= label_tag 'settings[monthly_report_enabled]', 'Enable monthly report' %>
+    <%= check_box_tag 'settings[monthly_report_enabled]', '1', Setting.plugin_redmine_sprint_board_pro['monthly_report_enabled'] == '1' %>
+    <span class="description">Send monthly sprint reports to managers or custom emails.</span>
+  </p>
+
+  <p>
+    <%= label_tag 'settings[monthly_report_day]', 'Monthly report day (1-28)' %>
+    <%= number_field_tag 'settings[monthly_report_day]', (Setting.plugin_redmine_sprint_board_pro['monthly_report_day'] || 1), min: 1, max: 28 %>
+  </p>
+
+  <p>
+    <%= label_tag 'settings[monthly_report_receivers]', 'Monthly report recipients (comma-separated emails)' %>
+    <%= text_field_tag 'settings[monthly_report_receivers]', Setting.plugin_redmine_sprint_board_pro['monthly_report_receivers'], size: 60 %>
+    <br/><span class="description">Leave blank to send to Project Managers of each project.</span>
+  </p>
+</fieldset>

@@ -3,8 +3,11 @@ class Sprint < ApplicationRecord
   has_many :issues
   validates :name, presence: true
 
+  scope :completed, -> { where(completed: true) }
+  scope :open, -> { where(completed: false) }
+
   def completed?
-    completed || (end_date && end_date < Date.today)
+    completed
   end
 
   def self.smart_backlog_candidates(project, limit: 10)

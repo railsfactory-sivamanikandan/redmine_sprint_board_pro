@@ -16,7 +16,7 @@
 - 🎨 Card Color Coding (e.g., based on priority)
 - 🪄 Optional Swimlanes (group by assignee, tracker, etc.)
 - 🧾 Export formats: CSV, PDF for Sprint list
-
+- 📧 Email Notifications
 ---
 
 ## 🛠 Installation
@@ -101,6 +101,61 @@ Admin → Settings → Project → Agile board
 - Card Colors: Priority-based color classes (configured via CSS)
 - Drag-and-Drop: Customizable via agile_board.js
 - Smart Suggestions: You can plug in your own AI/ML logic
+
+## 📧 Email Notifications
+
+The plugin now supports two types of automated email notifications:
+
+- 1 Sprint Completed Notification
+  - When it triggers: Immediately after a sprint is marked as completed.
+  - Recipients: The project manager (must have the "Manager" role and a valid email).
+  - Content:
+    - Sprint name and project name
+    - Sprint start & end dates
+    - Key metrics (velocity, closed/open points, open issues)
+    - Link to the Sprint Dashboard
+
+Enable/Disable:
+  - 1 Go to Administration → Plugins → Sprint Board Pro → Configure.
+  - 2 Set "Notify on sprint completed" to Enabled (1).
+
+## 2 Monthly Sprint Report
+  - When it triggers: Automatically at the end of each month (via a rake task or scheduled job).
+  - Recipients: The project manager (must have the "Manager" role and a valid email).
+  - Content:
+    - Reporting period (1st → last day of the month)
+    - Sprint counts (total, completed, open)
+    - Issues resolved
+    - Closed issues
+    - Story points completed
+    - Link to the project dashboard
+
+Enable/Disable:
+  - 1 Go to Administration → Plugins → Sprint Board Pro → Configure.
+  - 2 Set "Monthly report enabled" to Enabled (1).
+
+## ⚙️ Setup & Usage
+
+- 1 Ensure Email Settings
+  - In Administration → Settings → Email notifications, make sure:
+    - Host name and protocol is set under Administration → Settings → General.
+    - SMTP settings are correctly configured in config/configuration.yml or via environment variables.
+    - Setting.mail_from is set (default: redmine@example.net).
+
+- 2 Rake Task for Monthly Report
+Add this rake task to your cron to run at the end of each month:
+
+```bash
+# Example: run at 23:59 on the last day of each month
+59 23 28-31 * * [ "$(date +\%d -d tomorrow)" == "01" ] && cd /path/to/redmine && RAILS_ENV=production bundle exec rake sprint_board_pro:monthly_report
+```
+
+## 🔍 Notes
+
+- Manager detection: The plugin finds the first project member with the role “Manager” and sends them the report.
+- ActiveJob support: Emails are sent using deliver_later if async queue is enabled, otherwise deliver_now.
+- Letter Opener support: In development, you can use letter_opener to preview emails locally.
+
 
 ## 🔄 Supported Redmine Versions
 

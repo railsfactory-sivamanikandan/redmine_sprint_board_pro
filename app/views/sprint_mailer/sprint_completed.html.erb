@@ -1,0 +1,53 @@
+<div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+  <!-- Header -->
+  <div style="background-color: #2d89ef; color: #fff; padding: 16px;">
+    <h2 style="margin: 0; font-size: 20px;">🚀 Sprint Completed</h2>
+    <p style="margin: 4px 0 0; font-size: 14px;">"<%= @sprint.name %>" in <%= @project.name %></p>
+  </div>
+
+  <!-- Sprint Info -->
+  <div style="padding: 16px; background-color: #fafafa;">
+    <p style="margin: 0 0 8px;">
+      <strong>Project:</strong> 
+      <%= link_to @project.name, project_url(@project), style: "color: #2d89ef; text-decoration: none;" %>
+    </p>
+    <p style="margin: 0 0 8px;">
+      <strong>Duration:</strong> 
+      <%= format_date(@sprint.start_date) %> — <%= format_date(@sprint.end_date) %>
+    </p>
+  </div>
+
+  <!-- Metrics -->
+  <% if @metrics %>
+    <div style="padding: 16px;">
+      <h3 style="margin: 0 0 12px; font-size: 16px; color: #444;">📊 Sprint Metrics</h3>
+      <table style="border-collapse: collapse; width: 100%;">
+        <tr style="background-color: #f5f5f5;">
+          <td style="padding: 8px; border: 1px solid #ddd;">Total Points</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;"><%= @metrics.velocity_metrics[:total] %></td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd;">Closed Points</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;"><%= @metrics.velocity_metrics[:closed] %></td>
+        </tr>
+        <tr style="background-color: #f5f5f5;">
+          <td style="padding: 8px; border: 1px solid #ddd;">Open Issues</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;"><%= @metrics.open_closed_counts[:open_count] %></td>
+        </tr>
+      </table>
+    </div>
+  <% end %>
+
+  <!-- Call to Action -->
+  <div style="padding: 16px; text-align: center;">
+    <a href="<%= dashboard_project_sprint_url(@project, @sprint) %>" 
+       style="display: inline-block; padding: 10px 20px; background-color: #2d89ef; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">
+      📌 View Sprint Dashboard
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <div style="background-color: #f0f0f0; padding: 12px; font-size: 12px; color: #666; text-align: center;">
+    This is an automated notification from <strong>Redmine Sprint Board Pro</strong>.
+  </div>
+</div>
