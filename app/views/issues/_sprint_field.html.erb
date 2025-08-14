@@ -6,4 +6,7 @@
   <p>
     <%= f.number_field :story_points, min: 0 %>
   </p>
+  <p>
+    <%= f.select :difficulty, [["Easy", "easy"], ["Medium", "medium"], ["Hard", "hard"]],{ include_blank: true },{ class: 'difficulty-select' } %>
+  </p>
 <% end %>
