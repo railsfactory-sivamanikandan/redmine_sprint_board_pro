@@ -1,12 +1,15 @@
 <% if @project && @project.module_enabled?(:agile_board) && @project.sprints.any? %>
-  <p>
-    <%= f.select :sprint_id, @project.sprints.collect { |s| [s.name, s.id] }, include_blank: true %>
-  </p>
-
-  <p>
-    <%= f.number_field :story_points, min: 0 %>
-  </p>
-  <p>
-    <%= f.select :difficulty, [["Easy", "easy"], ["Medium", "medium"], ["Hard", "hard"]],{ include_blank: true },{ class: 'difficulty-select' } %>
-  </p>
+  <div class="splitcontent">
+    <div class="splitcontentleft">
+      <p>
+        <%= f.select :sprint_id, @project.sprints.collect { |s| [s.name, s.id] }, include_blank: true %>
+      </p>
+      <p>
+        <%= f.number_field :story_points, min: 0, step: "any" %>
+      </p>
+      <p>
+        <%= f.select :difficulty, [["Easy", "easy"], ["Medium", "medium"], ["Hard", "hard"]],{ include_blank: true },{ class: 'difficulty-select' } %>
+      </p>
+    </div>
+  </div>
 <% end %>

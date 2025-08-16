@@ -33,13 +33,22 @@ namespace :sprint_board_pro do
       .where(sprints: { id: sprints.ids })
       .sum(:story_points)
 
+    # Difficulty-based breakdown (only for closed issues in the period)
+    difficulty_breakdown = Issue
+      .joins(:sprint)
+      .where(sprints: { id: sprints.ids })
+      .where(status_id: IssueStatus.where(is_closed: true).select(:id))
+      .group(:difficulty)
+      .count
+
     {
       sprints: sprints.count,
       completed_sprints: project.sprints.completed.where(end_date: period_start..period_end).count,
       open_sprints: project.sprints.open.where(start_date: period_start..period_end).count,
       issues_resolved: project.issues.closed.where(closed_on: period_start..period_end).count,
       closed_issues: closed_issues_count,
-      story_points_done: story_points_done
+      story_points_done: story_points_done,
+      difficulty_breakdown: difficulty_breakdown
     }
   end
 end

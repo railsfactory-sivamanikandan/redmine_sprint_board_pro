@@ -14,6 +14,12 @@
           <%= @issue.story_points || '-' %>
         </div>
       </div>
+      <div class="difficulty attribute">
+        <div class="label">Difficulty:</div>
+        <div class="value">
+          <%= @issue.difficulty ? @issue.difficulty.capitalize : '-' %>
+        </div>
+      </div>
     </div>
   </div>
 <% end %>

@@ -5,7 +5,7 @@ module RedmineSprintBoardPro
       base.class_eval do
         acts_as_taggable_on :tags
         belongs_to :sprint, optional: true
-        safe_attributes 'sprint_id', 'story_points', 'board_position', 'tag_list'
+        safe_attributes 'sprint_id', 'story_points', 'board_position', 'tag_list', 'difficulty'
         scope :closed, -> { joins(:status).where(issue_statuses: { is_closed: true }) }
 
         validate :difficulty_required_if_story_points_present

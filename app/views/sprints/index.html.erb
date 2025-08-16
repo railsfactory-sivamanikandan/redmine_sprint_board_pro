@@ -36,6 +36,7 @@
       <th>Name</th>
       <th>Start Date</th>
       <th>End Date</th>
+      <th>Total Story Points</th>
       <th>Status</th>
       <th>Issues</th>
       <th>Actions</th>
@@ -48,6 +49,7 @@
         <td><%= link_to sprint.name, project_sprint_path(@project, sprint) %></td>
         <td><%= sprint.start_date %></td>
         <td><%= sprint.end_date %></td>
+        <td><%= sprint.total_points %></td>
         <td><%= sprint.completed? ? 'Completed' : 'Active' %></td>
         <td><%= sprint.issues.count %></td>
         <td>

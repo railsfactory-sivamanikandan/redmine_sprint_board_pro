@@ -282,8 +282,50 @@
   max-height: 350px; /* prevents it from growing too tall */
 }
 
+.medium {
+  grid-column: span 3;
+  min-height: 250px;
+  max-height: 270px;
+  min-width: 300px;
+}
+
 /* Also control the canvas itself */
 .card canvas {
   max-height: 100%;
   width: 100% !important;
+}
+
+.difficulty-values {
+  font-size: 7px !important;
+}
+
+.chart-tabs {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.chart-tab {
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none !important;
+  background: #f5f5f5;
+  color: #333;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.chart-tab:hover {
+  background: #e0e0e0;
+}
+
+.chart-tab.active {
+  background: #007bff;
+  color: #fff;
+}
+
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

@@ -1,0 +1,27 @@
+<div class="rsbp-grid" style="margin-top: 20px;">
+  <div class="dashboard-card large"><div class="dashboard-card-header">Velocity by Difficulty</div><canvas id="velocityByDifficultyChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Planned vs Completed by Difficulty</div><canvas id="plannedVsCompletedChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Burndown by Difficulty</div><canvas id="burndownByDifficultyChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty Distribution</div><canvas id="difficultyDistributionChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty Trend</div><canvas id="difficultyTrendChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Team Contribution by Difficulty</div><canvas id="teamContributionDiffChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty vs Cycle Time</div><canvas id="difficultyVsCycleChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty vs Bugs</div><canvas id="difficultyVsBugsChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header">Story Points by Developer & Difficulty</div><canvas id="developerDifficultyChart"></canvas></div>
+</div>
+<%= javascript_include_tag 'chart4', plugin: 'redmine_sprint_board_pro' %>
+<%= javascript_include_tag 'difficulty_charts', plugin: 'redmine_sprint_board_pro' %>
+<script>
+  const difficultyData = {
+    velocity_by_difficulty: <%= raw @velocity_by_difficulty.to_json %>,
+    planned_vs_completed: <%= raw @planned_vs_completed.to_json %>,
+    burndown_by_difficulty: <%= raw @burndown_by_difficulty.to_json %>,
+    difficulty_distribution: <%= raw @difficulty_distribution.to_json %>,
+    difficulty_trend: <%= raw @difficulty_trend.to_json %>,
+    team_contribution_diff: <%= raw @team_contribution_diff.to_json %>,
+    difficulty_vs_cycle_time: <%= raw @difficulty_vs_cycle_time.to_json %>,
+    difficulty_vs_bugs: <%= raw @difficulty_vs_bugs.to_json %>,
+    developer_difficulty: <%= raw @developer_difficulty_points.to_json %>
+  };
+  renderDifficultyCharts(difficultyData);
+</script>

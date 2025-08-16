@@ -36,7 +36,7 @@
         <% (@issues[status] || []).each do |issue| %>
           <% priority_name = issue.priority.try(:name).to_s.parameterize %>
           <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>" data-lock-version="<%= issue.lock_version %>">
-            <div class="card-title">#<%= issue.id %>: <%= issue.subject %></div>
+            <div class="card-title"><%= link_to "##{issue.id}", issue_path(issue) %> : <%= issue.subject%></div>
             <div class="card-meta">
               <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span><br>
               <span>🎯 <%= issue.story_points || 0 %> pts</span><br />

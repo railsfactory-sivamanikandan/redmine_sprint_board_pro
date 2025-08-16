@@ -1,0 +1,45 @@
+<div class="rsbp-grid" style="margin-top: 20px;">
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Velocity</div>
+    <canvas id="velocityChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Burndown</div>
+    <canvas id="burndownChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Cumulative Flow Diagram</div>
+    <canvas id="cfdChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Open vs Closed Issues</div>
+    <canvas id="openClosedChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Issue Type Breakdown</div>
+    <canvas id="issueTypeChart" class="chart-small"></canvas>
+  </div>
+
+  <div class="dashboard-card large">
+    <div class="dashboard-card-header">Team Contribution</div>
+    <canvas id="teamChart" class="chart-small"></canvas>
+  </div>
+</div>
+
+<%= javascript_include_tag 'chart4', plugin: 'redmine_sprint_board_pro' %>
+<%= javascript_include_tag 'sprints_charts', plugin: 'redmine_sprint_board_pro' %>
+<script>
+  const chartData = {
+    velocity: <%= raw @velocity.to_json %>,
+    burndown: <%= raw @burndown.to_json %>,
+    cfd: <%= raw @cfd.to_json %>,
+    team: <%= raw @team.to_json %>,
+    issue_types: <%= raw @issue_types.to_json %>,
+    open_closed: <%= raw @open_closed.to_json %>
+  };
+  renderDashboardCharts(chartData)
+</script>

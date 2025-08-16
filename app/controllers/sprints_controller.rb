@@ -1,44 +1,19 @@
 class SprintsController < ApplicationController
   before_action :find_project
-  before_action :find_sprint, only: [:show, :edit, :update, :destroy, :toggle_completed, :dashboard]
+  before_action :find_sprint, only: %i[
+    show edit update destroy toggle_completed dashboard
+  ]
+
   include SprintsHelper
   include SprintEmailHelper
+
   def index
-    status = params[:status]
-    tag = params[:tag]
-    @status_filter = params[:status]
-
-    scope = @project.sprints.order(created_at: :desc)
-    if status.present?
-      scope = scope.where(completed: false) if @status_filter == 'active'
-      scope = scope.where(completed: true) if @status_filter == 'completed'
-    end
-
-    if tag.present?
-      scope = scope.joins(:issues).merge(Issue.tagged_with(tag)).distinct
-    end
+    scope = filtered_sprints(@project.sprints.order(created_at: :desc))
 
     respond_to do |format|
-      format.html do
-        @sprint_count = scope.count
-        @limit = per_page_option
-        @sprint_pages = Paginator.new @sprint_count, @limit, params[:page]
-        @offset = @sprint_pages.offset
-        @sprints = scope.offset(@offset).limit(@limit)
-      end
-      format.csv do
-        send_data(sprints_to_csv(scope),
-          type: 'text/csv; header=present',
-          filename: "#{filename_for_export(@project, 'sprints')}.csv")
-      end
-
-      format.pdf do
-        pdf_data = sprints_to_pdf(scope)
-        send_data pdf_data,
-          type: 'application/pdf',
-          disposition: 'attachment',
-          filename: "#{filename_for_export(@project, 'sprints')}.pdf"
-      end
+      format.html { paginate_sprints(scope) }
+      format.csv  { export_csv(scope) }
+      format.pdf  { export_pdf(scope) }
     end
   end
 
@@ -75,25 +50,24 @@ class SprintsController < ApplicationController
   end
 
   def toggle_completed
-    was_completed = @sprint.completed?
-    @sprint.update(completed: !was_completed)
+    @sprint.toggle!(:completed)
     send_sprint_completed_email(@sprint) if @sprint.completed?
     redirect_to project_sprints_path(@project)
   end
 
   def dashboard
     render_403 unless User.current.allowed_to?(:view_agile_board, @project)
-    service = SprintService.new(@sprint)
-    @burndown = service.burndown_series            # [[date, remaining], ...]
-    @velocity = service.velocity_metrics           # { total:, closed: }
-    @cfd = service.cfd_series                      # { labels: [...], datasets: [...] }
-    @team = service.team_contribution              # [{user_name:, points:}, ...]
-    @issue_types = service.issue_type_breakdown    # [{tracker_name:, points:}, ...]
-    @open_closed = service.open_closed_counts
+
+    @velocity = SprintService.new(@sprint).velocity_metrics
+
+    params[:chart_type] == 'difficulty' ? load_difficulty_charts : load_normal_charts
   end
 
   private
 
+  # ----------------------
+  # Filters
+  # ----------------------
   def find_project
     @project = Project.find(params[:project_id])
   end
@@ -106,8 +80,69 @@ class SprintsController < ApplicationController
     params.require(:sprint).permit(:name, :start_date, :end_date, :completed)
   end
 
+  # ----------------------
+  # Helpers
+  # ----------------------
   def assign_issues_to_sprint
-    issue_ids = params[:issue_ids] || []
-    Issue.where(id: issue_ids).update_all(sprint_id: @sprint.id)
+    (params[:issue_ids] || []).each do |id|
+      Issue.where(id: id).update_all(sprint_id: @sprint.id)
+    end
+  end
+
+  def filtered_sprints(scope)
+    scope = case params[:status]
+            when 'active'    then scope.where(completed: false)
+            when 'completed' then scope.where(completed: true)
+            else scope
+            end
+
+    if params[:tag].present?
+      scope = scope.joins(:issues).merge(Issue.tagged_with(params[:tag])).distinct
+    end
+
+    scope
+  end
+
+  def paginate_sprints(scope)
+    @sprint_count = scope.count
+    @limit        = per_page_option
+    @sprint_pages = Paginator.new(@sprint_count, @limit, params[:page])
+    @offset       = @sprint_pages.offset
+    @sprints      = scope.offset(@offset).limit(@limit)
+  end
+
+  def export_csv(scope)
+    send_data sprints_to_csv(scope),
+              type: 'text/csv; header=present',
+              filename: "#{filename_for_export(@project, 'sprints')}.csv"
+  end
+
+  def export_pdf(scope)
+    send_data sprints_to_pdf(scope),
+              type: 'application/pdf',
+              disposition: 'attachment',
+              filename: "#{filename_for_export(@project, 'sprints')}.pdf"
+  end
+
+  def load_normal_charts
+    service = SprintService.new(@sprint)
+    @burndown     = service.burndown_series
+    @cfd          = service.cfd_series
+    @team         = service.team_contribution
+    @issue_types  = service.issue_type_breakdown
+    @open_closed  = service.open_closed_counts
+  end
+
+  def load_difficulty_charts
+    service = DifficultyAnalyticsService.new(@sprint)
+    @velocity_by_difficulty   = service.velocity_by_difficulty
+    @planned_vs_completed     = service.planned_vs_completed
+    @burndown_by_difficulty   = service.burndown_by_difficulty
+    @difficulty_distribution  = service.difficulty_distribution
+    @difficulty_trend         = service.difficulty_trend
+    @team_contribution_diff   = service.team_contribution_by_difficulty
+    @difficulty_vs_cycle_time = service.difficulty_vs_cycle_time
+    @difficulty_vs_bugs       = service.difficulty_vs_bugs
+    @developer_difficulty_points = service.developer_difficulty_points
   end
 end
