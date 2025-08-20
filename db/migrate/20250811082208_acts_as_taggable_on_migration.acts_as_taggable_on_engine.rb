@@ -18,15 +18,17 @@ class ActsAsTaggableOnMigration < ActiveRecord::Migration[6.0]
 
       # Limit is created to prevent MySQL error on index
       # length for MyISAM table type: http://bit.ly/vgW2Ql
-      t.string :context, limit: 128
+      t.string :context, limit: 128 unless column_exists?(ActsAsTaggableOn.taggings_table, :context)
 
       t.datetime :created_at
     end
-    unless index_exists?(ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
-                       name: 'taggings_taggable_context_idx')
+    if column_exists?(ActsAsTaggableOn.taggings_table, :context)
+      unless index_exists?(ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
+                        name: 'taggings_taggable_context_idx')
 
-      add_index ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
-              name: 'taggings_taggable_context_idx'
+        add_index ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
+                name: 'taggings_taggable_context_idx'
+      end
     end
   end
 
