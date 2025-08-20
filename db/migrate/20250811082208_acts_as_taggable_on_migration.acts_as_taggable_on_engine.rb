@@ -3,12 +3,12 @@
 # This migration comes from acts_as_taggable_on_engine (originally 1)
 class ActsAsTaggableOnMigration < ActiveRecord::Migration[6.0]
   def self.up
-    create_table ActsAsTaggableOn.tags_table do |t|
+    create_table ActsAsTaggableOn.tags_table, if_not_exists: true do |t|
       t.string :name
       t.timestamps
     end
 
-    create_table ActsAsTaggableOn.taggings_table do |t|
+    create_table ActsAsTaggableOn.taggings_table, if_not_exists: true do |t|
       t.references :tag, foreign_key: { to_table: ActsAsTaggableOn.tags_table }
 
       # You should make sure that the column created is
@@ -22,9 +22,12 @@ class ActsAsTaggableOnMigration < ActiveRecord::Migration[6.0]
 
       t.datetime :created_at
     end
+    unless index_exists?(ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
+                       name: 'taggings_taggable_context_idx')
 
-    add_index ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
+      add_index ActsAsTaggableOn.taggings_table, %i[taggable_id taggable_type context],
               name: 'taggings_taggable_context_idx'
+    end
   end
 
   def self.down
