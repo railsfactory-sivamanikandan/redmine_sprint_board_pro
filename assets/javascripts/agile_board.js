@@ -246,3 +246,57 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+  const STORAGE_KEY = "statusFilter";
+  const form = document.getElementById("status-filter-form");
+  const selectAllCheckbox = document.getElementById("select-all");
+  const statusCheckboxes = Array.from(document.querySelectorAll(".status-checkbox"));
+
+  // Load saved selections from localStorage
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  applySavedSelections(saved);
+
+  // Update columns based on selection
+  updateColumns(saved);
+
+  // Event: Select / Unselect All
+  selectAllCheckbox.addEventListener("change", () => {
+    statusCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+  });
+
+  // Event: Individual checkbox change
+  statusCheckboxes.forEach(cb => {
+    cb.addEventListener("change", () => {
+      selectAllCheckbox.checked = statusCheckboxes.every(cb => cb.checked);
+    });
+  });
+
+  // Event: Form submit
+  form.addEventListener("submit", function (e) {
+    e.preventDefault(); // prevent page reload
+    const selected = statusCheckboxes.filter(cb => cb.checked).map(cb => cb.value);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+    updateColumns(selected);
+  });
+
+  // --- Helper functions ---
+  function applySavedSelections(saved) {
+    statusCheckboxes.forEach(cb => {
+      cb.checked = saved.includes(cb.value);
+    });
+    selectAllCheckbox.checked = statusCheckboxes.every(cb => cb.checked);
+  }
+
+  function saveAndUpdate() {
+    const selected = statusCheckboxes.filter(cb => cb.checked).map(cb => cb.value);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+    updateColumns(selected);
+  }
+
+  function updateColumns(selected) {
+    document.querySelectorAll(".status-column").forEach(col => {
+      col.style.display = selected.includes(col.dataset.statusId) ? "" : "none";
+    });
+  }
+});

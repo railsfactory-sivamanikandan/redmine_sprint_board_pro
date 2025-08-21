@@ -1,0 +1,16 @@
+<div id="agile-board-status-filter">
+  <h3>Filter by Status</h3>
+  <form id="status-filter-form">
+    <label>
+      <input type="checkbox" id="select-all">
+      Select / Unselect All
+    </label><br/>
+    <% @statuses.each_with_index do |status, index| %>
+      <label>
+        <input type="checkbox" class="status-checkbox" name="status_ids[]" value="<%= status.id %>" checked>
+        <%= status.name %>
+      </label><br>
+    <% end %>
+    <button type="submit">Apply</button>
+  </form>
+</div>

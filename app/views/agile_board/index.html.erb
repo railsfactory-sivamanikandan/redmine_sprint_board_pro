@@ -8,47 +8,51 @@
   </script>
 <% end %>
 
-<div class="agile-board-header">
-  <div class="filters">
-    <%= form_with url: project_agile_board_path(@project), method: :get, local: true do |form| %>
-      <label for="sprint_id">Select Sprint:</label>
-      <%= select_tag :sprint_id, options_from_collection_for_select(@sprints, :id, :name, params[:sprint_id]), onchange: 'this.form.submit();' %>
-    <% end %>
-  </div>
-  <div>
-    <% if User.current.allowed_to?(:manage_sprints, @project) %>
-      <p>
-        <%= link_to 'New Sprint', new_project_sprint_path(@project), class: 'icon icon-add' %>
-      </p>
-    <% end %>
-  </div>
-</div>
-
-<h2 class="agile-board-title">Agile Board for <%= @project.name %></h2>
-
-<div class="agile-board">
-  <% @statuses.each do |status| %>
-    <div class="status-column" data-status-id="<%= status.id %>">
-      <div class="status-header">
-        <h3><%= status.name %></h3>
+<div class="agile-board-container">
+  <div class="agile-board-header">
+    <div class="agile-controls">
+      <div class="filters">
+        <%= form_with url: project_agile_board_path(@project), method: :get, local: true do |form| %>
+          <label for="sprint_id">Select Sprint:</label>
+          <%= select_tag :sprint_id, options_from_collection_for_select(@sprints, :id, :name, params[:sprint_id]), onchange: 'this.form.submit();' %>
+        <% end %>
       </div>
-      <div class="card-list droppable-area" data-status-id="<%= status.id %>">
-        <% (@issues[status] || []).each do |issue| %>
-          <% priority_name = issue.priority.try(:name).to_s.parameterize %>
-          <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>" data-lock-version="<%= issue.lock_version %>">
-            <div class="card-title"><%= link_to "##{issue.id}", issue_path(issue) %> : <%= issue.subject%></div>
-            <div class="card-meta">
-              <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span><br>
-              <span>🎯 <%= issue.story_points || 0 %> pts</span><br />
-              <% issue.tag_list.each_with_index do |tag, idx| %>
-                <span class="issue-tag color-<%= idx % 10 %>"><%= tag %></span>
-              <% end %>
-            </div>
-          </div>
+      <div>
+        <% if User.current.allowed_to?(:manage_sprints, @project) %>
+          <p>
+            <%= link_to 'New Sprint', new_project_sprint_path(@project), class: 'icon icon-add' %>
+          </p>
         <% end %>
       </div>
     </div>
-  <% end %>
+  </div>
+
+  <h2 class="agile-board-title">Agile Board for <%= @project.name %></h2>
+
+  <div class="agile-board">
+    <% @statuses.each do |status| %>
+      <div class="status-column" data-status-id="<%= status.id %>">
+        <div class="status-header">
+          <h3><%= status.name %> (<%= (@issues[status] || []).size%>)</h3>
+        </div>
+        <div class="card-list droppable-area" data-status-id="<%= status.id %>">
+          <% (@issues[status] || []).each do |issue| %>
+            <% priority_name = issue.priority.try(:name).to_s.parameterize %>
+            <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>" data-lock-version="<%= issue.lock_version %>">
+              <div class="card-title"><%= link_to "##{issue.id}", issue_path(issue) %> : <%= issue.subject%></div>
+              <div class="card-meta">
+                <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span><br>
+                <span>🎯 <%= issue.story_points || 0 %> pts</span><br />
+                <% issue.tag_list.each_with_index do |tag, idx| %>
+                  <span class="issue-tag color-<%= idx % 10 %>"><%= tag %></span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>
 <%= javascript_include_tag 'Sortable.min', plugin: 'redmine_sprint_board_pro' %>
 <%= javascript_include_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>

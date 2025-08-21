@@ -1,14 +1,30 @@
+.agile-board-container {
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
 .agile-board-header {
+  align-items: center;
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.agile-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1em;
+  gap: 20px;
 }
 
 .agile-board {
   display: flex;
   gap: 20px;
   padding-bottom: 2rem;
+  overflow-x: auto;
 }
 
 .status-column {
@@ -328,4 +344,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+#status-filter {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+}
+#status-filter h3 {
+  margin-top: 0;
+}
+
+#status-filter-form label {
+  cursor: pointer;
+}
+
+.agile-controls .filters form {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
 }
