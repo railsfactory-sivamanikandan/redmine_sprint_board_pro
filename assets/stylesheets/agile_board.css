@@ -88,19 +88,23 @@
   background-color: #ff9800;
   color: white;
 }
-.priority-normal {
+.priority-normal, .priority-critical-p2 {
   background-color: #2196f3;
   color: white;
 }
-.priority-low {
+.priority-low, .priority-non-critical-p3 {
   background-color: #4caf50;
   color: white;
 }
-.priority-immediate {
+.priority-immediate, .priority-showstopper-p1 {
   background-color: #9c27b0;
   color: white;
 }
-.priority-lowest {
+.priority-lowest, .priority-trivial-p4 {
+  background-color: #607d8b;
+  color: white;
+}
+.priority-none {
   background-color: #e0e0e0;
   color: #000;
 }
