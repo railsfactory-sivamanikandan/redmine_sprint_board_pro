@@ -144,7 +144,9 @@
 }
 .droppable-area {
   background: #f1f8ff;
-  min-height: 40px;
+  min-height: 360px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 .droppable-area.dragover {
   outline: 2px dashed #007acc;
