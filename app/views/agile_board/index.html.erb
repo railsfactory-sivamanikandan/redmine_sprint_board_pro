@@ -29,7 +29,7 @@
 
   <h2 class="agile-board-title">Agile Board for <%= @project.name %></h2>
 
-  <div class="agile-board">
+  <div class="agile-board-listing">
     <% @statuses.each do |status| %>
       <div class="status-column" data-status-id="<%= status.id %>">
         <div class="status-header">
