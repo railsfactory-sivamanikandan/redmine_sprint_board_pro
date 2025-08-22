@@ -5,12 +5,14 @@
       <input type="checkbox" id="select-all">
       Select / Unselect All
     </label><br/>
-    <% @statuses.each_with_index do |status, index| %>
-      <label>
-        <input type="checkbox" class="status-checkbox" name="status_ids[]" value="<%= status.id %>" checked>
-        <%= status.name %>
-      </label><br>
-    <% end %>
+    <div id="status-list-section">
+      <% @statuses.each_with_index do |status, index| %>
+        <label>
+          <input type="checkbox" class="status-checkbox" name="status_ids[]" value="<%= status.id %>" checked>
+          <%= status.name %>
+        </label><br>
+      <% end %>
+    </div>
     <button type="submit">Apply</button>
   </form>
 </div>

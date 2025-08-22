@@ -371,3 +371,9 @@
   align-items: center;
   gap: 10px;
 }
+
+#status-list-section {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 21px;
+}
