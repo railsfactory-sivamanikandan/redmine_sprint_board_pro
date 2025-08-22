@@ -3,7 +3,7 @@ Rails.application.config.assets.paths << File.expand_path('../assets/javascripts
 
 Redmine::Plugin.register :redmine_sprint_board_pro do
   name 'Redmine Sprint Board Pro plugin'
-  author 'sivamanikandan'
+  author 'Sivamanikandan'
   description 'Redmine Sprint Board Pro plugin is a powerful plugin for Redmine that brings Agile project management features like Sprint Planning, Trello-style Agile Boards, Burndown Charts, Smart Backlog Suggestions, and more.'
   version '0.0.1'
   url 'https://github.com/railsfactory-sivamanikandan/redmine_sprint_board_pro.git'
