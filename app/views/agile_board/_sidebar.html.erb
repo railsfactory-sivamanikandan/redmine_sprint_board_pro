@@ -1,9 +1,10 @@
 <div id="agile-board-status-filter">
-  <h3>Filter by Status</h3>
+  <h3><%= l(:label_filter_by_status) %></h3>
   <form id="status-filter-form">
     <label>
       <input type="checkbox" id="select-all">
-      Select / Unselect All
+      <span id=select-all-label-text>
+      </span>     
     </label><br/>
     <div id="status-list-section">
       <% @statuses.each_with_index do |status, index| %>
@@ -13,6 +14,6 @@
         </label><br>
       <% end %>
     </div>
-    <button type="submit">Apply</button>
+    <button type="submit"><%= l(:button_apply) %></button>
   </form>
 </div>

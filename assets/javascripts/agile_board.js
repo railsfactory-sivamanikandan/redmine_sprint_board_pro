@@ -251,7 +251,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const STORAGE_KEY = "statusFilter";
   const form = document.getElementById("status-filter-form");
   const selectAllCheckbox = document.getElementById("select-all");
-  const statusCheckboxes = Array.from(document.querySelectorAll(".status-checkbox"));
+
+  const selectAllLabel = document.getElementById("select-all-label-text");
+
+  const buttonCheckAll = window.buttonCheckAll ?? "Check all";
+  const buttonUncheckAll = window.buttonUncheckAll ?? "Uncheck all";
+
+  const statusCheckboxes = Array.from(
+    document.querySelectorAll(".status-checkbox")
+  );
 
   // Load saved selections from localStorage
   const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -259,16 +267,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Update columns based on selection
   updateColumns(saved);
+  updateCheckboxText();
 
   // Event: Select / Unselect All
   selectAllCheckbox.addEventListener("change", () => {
     statusCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+    updateCheckboxText();
   });
 
   // Event: Individual checkbox change
   statusCheckboxes.forEach(cb => {
     cb.addEventListener("change", () => {
       selectAllCheckbox.checked = statusCheckboxes.every(cb => cb.checked);
+      updateCheckboxText();
     });
   });
 
@@ -298,5 +309,11 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".status-column").forEach(col => {
       col.style.display = selected.includes(col.dataset.statusId) ? "" : "none";
     });
+  }
+
+  function updateCheckboxText() {
+    selectAllLabel.innerText = !selectAllCheckbox.checked
+      ? buttonCheckAll
+      : buttonUncheckAll;
   }
 });

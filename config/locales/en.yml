@@ -2,10 +2,17 @@ en:
   field_sprint: Sprint
   field_story_points: Story Points
   field_board_position: Board Position
+  field_sprint_select: Select Sprint
   label_agile_board: Agile Board
   label_manage_sprints: Manage Sprints
   label_sprint_plural: Sprints
   label_sprint_new: New Sprint
+  label_manage_sprint: Manage Sprint
+  label_edit_sprint: Edit Sprint
+  label_dashboard_sprint: Sprint dashboard
+  label_filter_by_status: Filter by Status
+  label_board_issue_unassigned: Unassigned
+  label_board_issue_story_points: pts
   permission_view_agile_board: View Agile Board
   permission_edit_agile_board: Edit Agile Board
   permission_manage_sprints: Manage Sprints
