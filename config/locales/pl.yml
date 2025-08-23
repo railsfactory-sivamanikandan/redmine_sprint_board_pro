@@ -1,0 +1,19 @@
+pl:
+  field_sprint: Sprint
+  field_story_points: Story pointy
+  field_board_position: Pozycja tablicy
+  field_sprint_select: Wybierz sprint
+  label_agile_board: Tablica Agile
+  label_manage_sprints: Zarządzaj sprintami
+  label_sprint_plural: Sprinty
+  label_sprint_new: Nowy sprint
+  label_manage_sprint: Zarządzaj sprintem
+  label_edit_sprint: Edytuj sprint
+  label_dashboard_sprint: Panel sprintu
+  label_filter_by_status: Filtruj po statusie
+  label_board_issue_unassigned: Nieprzypisane
+  label_board_issue_story_points: pkt
+  permission_view_agile_board: Wyświetlanie Tablicy Agile
+  permission_edit_agile_board: Edycja Tablicy Agile
+  permission_manage_sprints: Zarządzanie sprintami
+  field_difficulty: Złożoność
