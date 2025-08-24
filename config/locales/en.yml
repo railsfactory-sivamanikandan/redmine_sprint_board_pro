@@ -104,3 +104,10 @@ en:
   text_email_report_project_dashboard: Project Dashboard
   text_email_report_subscribe_info: You are receiving this report because you are subscribed to sprint updates for
   text_email_report_manage_notifications: Manage notification settings
+
+  text_email_report_sprint_completed: Sprint Completed
+  text_email_report_project: Project
+  text_email_report_duration: Duration
+  text_email_report_view_dashboard: View Sprint Dashboard
+  text_email_report_notification_info: This is an automated notification from
+  

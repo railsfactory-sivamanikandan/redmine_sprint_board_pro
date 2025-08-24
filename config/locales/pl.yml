@@ -103,3 +103,11 @@ pl:
   text_email_report_project_dashboard: Panel projektu
   text_email_report_subscribe_info: Otrzymujesz ten raport, ponieważ subskrybujesz aktualizacje sprintu dla projektu
   text_email_report_manage_notifications: Zarządzaj ustawieniami powiadomień
+  
+  text_email_report_sprint_completed: Sprint ukończony
+  text_email_report_project: Projekt
+  text_email_report_duration: Okres
+  text_email_report_view_dashboard: Zobacz panel sprintu
+  text_email_report_notification_info: To automatyczna wiadomość z
+  
+
