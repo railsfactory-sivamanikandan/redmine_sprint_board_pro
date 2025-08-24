@@ -84,3 +84,23 @@ en:
   label_sprint_settings_report_day: Monthly report day
   label_sprint_settings_report_recipients: Monthly report recipients (comma-separated emails)
   text_sprint_settings_report_recipients: Leave blank to send to Project Managers of each project
+
+  text_email_report_title: Monthly Sprint Report
+  text_email_report_summary: Summary
+  text_email_report_metric: Metric
+  text_email_report_total_sprints: Total sprints in period
+  text_email_report_completed_sprints: Completed Sprints
+  text_email_report_open_sprints: Open Sprints
+  text_email_report_issues_resolved: Issues Resolved
+  text_email_report_closed_issues_period: Closed Issues in Period
+  text_email_report_story_points_completed: Story Points Completed
+  text_email_report_no_sprints_completed: No sprints completed during this reporting period
+  text_email_report_difficulty_breakdown: Difficulty Breakdown
+  text_email_report_closed_issues: Closed Issues
+  text_email_report_unspecified: Unspecified
+  text_email_report_no_closed_issues: No closed issues with difficulty recorded during this reporting period
+  text_email_report_detailed_charts: For detailed burndown charts, velocity trends, and backlog insights,  
+        visit the
+  text_email_report_project_dashboard: Project Dashboard
+  text_email_report_subscribe_info: You are receiving this report because you are subscribed to sprint updates for
+  text_email_report_manage_notifications: Manage notification settings

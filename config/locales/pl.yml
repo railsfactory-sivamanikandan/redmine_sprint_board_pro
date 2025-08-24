@@ -84,3 +84,22 @@ pl:
   label_sprint_settings_report_day: Dzień miesiąca wysłania raportu
   label_sprint_settings_report_recipients: Odbiorcy miesięcznych raportów (adresy emaile odzielane przecinkiem)
   text_sprint_settings_report_recipients: Pozostaw puste, aby wysłać do menadżerów projektów każdego projektu
+
+  text_email_report_title: Miesięczny raport sprintu
+  text_email_report_summary: Podsumowanie
+  text_email_report_metric: Metryka
+  text_email_report_total_sprints: Łączna liczba sprintów
+  text_email_report_completed_sprints: Ukończone sprinty
+  text_email_report_open_sprints: Otwarte sprinty
+  text_email_report_issues_resolved: Rozwiązane zagadnienia
+  text_email_report_closed_issues_period: Łączna ilość rozwiązanych zagadnień
+  text_email_report_story_points_completed: Ukończone story pointy
+  text_email_report_no_sprints_completed: Nie ukończono żadnego sprintu w okresie raportu
+  text_email_report_difficulty_breakdown: Podział wg złożoności
+  text_email_report_closed_issues: Closed Issues
+  text_email_report_unspecified: Nieokreślona
+  text_email_report_no_closed_issues: Brak zamkniętych zagadnień z przypisaną złożonością w tym okresie raportowania
+  text_email_report_detailed_charts: Aby zobaczyć szczegółowe wykresy burndown, trendy velocity i analizę backlogu, odwiedź
+  text_email_report_project_dashboard: Panel projektu
+  text_email_report_subscribe_info: Otrzymujesz ten raport, ponieważ subskrybujesz aktualizacje sprintu dla projektu
+  text_email_report_manage_notifications: Zarządzaj ustawieniami powiadomień

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Monthly Sprint Report</title>
+  <title><%= l(:text_email_report_title) %></title>
   <style>
     body {
       font-family: Arial, Helvetica, sans-serif;
@@ -95,67 +95,67 @@
 <body>
   <div class="email-wrapper">
     <div class="header">
-      <h1>Monthly Sprint Report</h1>
+      <h1><%= l(:text_email_report_title) %></h1>
       <p><%= @project.name %> — <%= @summary[:period_start].strftime('%d %b %Y') %> to <%= @summary[:period_end].strftime('%d %b %Y') %></p>
     </div>
 
     <div class="content">
-      <div class="section-title">Summary</div>
+      <div class="section-title"><%= l(:text_email_report_summary) %></div>
       <% if @summary.present? %>
         <table class="metrics">
           <thead>
             <tr>
-              <th>Metric</th>
-              <th>Value</th>
+              <th><%= l(:text_email_report_metric) %></th>
+              <th><%= l(:text_email_report_value) %></th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Total Sprints in Period</td>
+              <td><%= l(:text_email_report_total_sprints) %></td>
               <td><%= @summary[:sprints] %></td>
             </tr>
             <tr>
-              <td>Completed Sprints</td>
+              <td><%= l(:text_email_report_completed_sprints) %></td>
               <td><%= @summary[:completed_sprints] %></td>
             </tr>
             <tr>
-              <td>Open Sprints</td>
+              <td><%= l(:text_email_report_open_sprints) %></td>
               <td><%= @summary[:open_sprints] %></td>
             </tr>
             <tr>
-              <td>Issues Resolved</td>
+              <td><%= l(:text_email_report_issues_resolved) %></td>
               <td><%= @summary[:issues_resolved] %></td>
             </tr>
             <tr>
-              <td>Closed Issues in Period</td>
+              <td><%= l(:text_email_report_closed_issues_period) %></td>
               <td><%= @summary[:closed_issues] %></td>
             </tr>
             <tr>
-              <td>Story Points Completed</td>
+              <td><%= l(:text_email_report_story_points_completed) %></td>
               <td><%= @summary[:story_points_done] %></td>
             </tr>
           </tbody>
         </table>
       <% else %>
         <div class="no-data">
-          No sprints completed during this reporting period.
+          <%= l(:text_email_report_no_sprints_completed) %>
         </div>
       <% end %>
 
       <div style="margin-top: 20px;">
-        <div class="section-title">Difficulty Breakdown</div>
+        <div class="section-title"><%= l(:text_email_report_difficulty_breakdown) %></div>
         <% if @summary[:difficulty_breakdown].present? %>
           <table class="metrics">
             <thead>
               <tr>
-                <th>Difficulty</th>
-                <th>Closed Issues</th>
+                <th><%= l(:field_difficulty) %></th>
+                <th><%= l(:text_email_report_closed_issues) %></th>
               </tr>
             </thead>
             <tbody>
               <% @summary[:difficulty_breakdown].each do |difficulty, count| %>
                 <tr>
-                  <td><%= difficulty.presence || "Unspecified" %></td>
+                  <td><%= difficulty.presence || l(:text_email_report_difficulty_breakdown) %></td>
                   <td><%= count %></td>
                 </tr>
               <% end %>
@@ -163,21 +163,20 @@
           </table>
         <% else %>
           <div class="no-data">
-            No closed issues with difficulty recorded during this reporting period.
+            <%= l(:text_email_report_no_closed_issues) %>
           </div>
         <% end %>
       </div>
 
       <p style="margin-top: 20px; font-size: 14px;">
-        📊 For detailed burndown charts, velocity trends, and backlog insights,  
-        visit the <%= link_to 'Project Dashboard', project_url(@project) %>.
+        📊 <%= l(:text_email_report_detailed_charts) %> <%= link_to l(:text_email_report_project_dashboard), project_url(@project) %>.
       </p>
     </div>
 
     <div class="footer">
-      You are receiving this report because you are subscribed to sprint updates for <strong><%= @project.name %></strong>.  
+       <%= l(:text_email_report_subscribe_info) %> <strong><%= @project.name %></strong>.  
       <br>
-      <a href="<%= project_url(@project) %>">Manage notification settings</a>
+      <a href="<%= project_url(@project) %>"><%= l(:text_email_report_manage_notifications) %></a>
     </div>
   </div>
 </body>
