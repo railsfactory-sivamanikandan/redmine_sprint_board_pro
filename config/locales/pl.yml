@@ -3,17 +3,67 @@ pl:
   field_story_points: Story pointy
   field_board_position: Pozycja tablicy
   field_sprint_select: Wybierz sprint
+  field_sprint_end_date: Data zakończenia
+  field_sprint_name: Nazwa sprintu
+  button_sprint_show_suggestions: Pokaż inteligentne podpowiedzi
+  button_sprint_update: Zaktualizuj sprint
   label_agile_board: Tablica Agile
   label_manage_sprints: Zarządzaj sprintami
   label_sprint_plural: Sprinty
   label_sprint_new: Nowy sprint
   label_manage_sprint: Zarządzaj sprintem
   label_edit_sprint: Edytuj sprint
-  label_dashboard_sprint: Panel sprintu
   label_filter_by_status: Filtruj po statusie
   label_board_issue_unassigned: Nieprzypisane
   label_board_issue_story_points: pkt
+  label_sprint_mark_completed: Oznacz jako ukończony
+  label_sprint_mark_active: Oznacz jako aktywny
+  label_sprint_backlog_suggestions: Inteligentne podpowiedzi backlogu
   permission_view_agile_board: Wyświetlanie Tablicy Agile
   permission_edit_agile_board: Edycja Tablicy Agile
   permission_manage_sprints: Zarządzanie sprintami
   field_difficulty: Złożoność
+  label_sprint_status: Status sprintu
+  label_sprint_status_active: Aktywny
+  label_sprint_status_completed: Ukończony
+  label_sprint_actions: Akcje
+  label_sprint_all_tags: Wszystkie tagi
+  label_sprint_tags: Tagi
+  label_remove_sprint: Usuń sprint
+  text_not_found_sprint: Nie znaleziono sprintu
+
+  label_dashboard_sprint: Panel sprintu
+  label_dashboard_sprint_total_points: Suma punktów
+  label_dashboard_sprint_closed_points: Zamknięte punkty
+  label_dashboard_sprint_completed_points: Ukończone punkty
+  label_dashboard_sprint_completion_rate: Wskaźnik ukończenia
+  label_dashboard_sprint_remaining_points: Pozostałe punkty
+  label_dashboard_sprint_days_remaining: Pozostałe dni
+  label_dashboard_sprint_open_issues: Otwarte zagadnienia
+  label_dashboard_sprint_progress: Progress
+
+  label_sprint_charts_normal: Normalne wykresy
+  label_sprint_charts_difficulty: Analiza według złożoności
+  label_sprint_charts_velocity: Wykres prędkości
+  label_sprint_charts_burndown: Wykres spalania
+  label_sprint_charts_cfd: Wykres skumulowanego przepływu
+  label_sprint_charts_open_closed: Otwarte vs zamknięte zgłoszenia
+  label_sprint_charts_issue_type: Podział według typu zgłoszeń
+  label_sprint_charts_team: Wkład zespołowy
+  label_sprint_ended: Zakończony
+
+  label_sprint_difficulty_charts_velocity: Prędkość wg złożoności
+  label_sprint_difficulty_charts_planned_vs_completed: Planowane vs zrealizowane wg złożoności
+  label_sprint_difficulty_charts_burndown: Wykres spalania wg złożoności
+  label_sprint_difficulty_charts_distributionn: Rozkład złożoności
+  label_sprint_difficulty_charts_trend: Trend złożoności
+  label_sprint_difficulty_team: Wkład zespołu wg złożoności
+  label_sprint_difficulty_cycle: Złożoność vs czas cyklu
+  label_sprint_difficulty_bugs: Złożoność vs błędy
+  label_sprint_difficulty_story_points: Story points wg programisty i złożoności
+
+  label_sprint_issues: Zagadnienia w sprincie
+  text_sprint_drop_issues: Przeciągnij zagadnienie aby je przypisać
+  text_sprint_unassigned_issues: Nieprzypisane zagadnienia
+  label_back_to_sprint_list: Wróć do listy sprintów
+  label_remove_from_sprint: Usuń ze sprintu

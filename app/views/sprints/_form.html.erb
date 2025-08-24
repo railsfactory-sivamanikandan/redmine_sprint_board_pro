@@ -1,7 +1,7 @@
 <% issues = Sprint.smart_backlog_candidates(@project)%>
 <% if issues.count > 0 %>
   <button type="button" onclick="toggleSuggestions()" class="button icon icon-lightbulb">
-    💡 Show Smart Suggestions
+    💡 <%= l(:button_sprint_show_suggestions) %>
   </button>
 <% end %>
 <%= form_with model: [@project, @sprint], local: true do |form| %>
@@ -21,7 +21,7 @@
       </p>
       <% if @sprint.persisted? %>
         <p>
-          <%= form.label :completed, "Mark as Completed" %>
+          <%= form.label :completed, l(:label_sprint_mark_completed) %>
           <%= form.check_box :completed %>
         </p>
       <% end %>

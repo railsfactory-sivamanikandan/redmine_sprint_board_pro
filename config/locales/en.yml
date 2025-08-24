@@ -3,17 +3,67 @@ en:
   field_story_points: Story Points
   field_board_position: Board Position
   field_sprint_select: Select Sprint
+  field_sprint_end_date: End date
+  field_sprint_name: Sprint name
+  button_sprint_show_suggestions: Show Smart Suggestions
+  button_sprint_update: Update Sprint
   label_agile_board: Agile Board
   label_manage_sprints: Manage Sprints
   label_sprint_plural: Sprints
   label_sprint_new: New Sprint
   label_manage_sprint: Manage Sprint
   label_edit_sprint: Edit Sprint
-  label_dashboard_sprint: Sprint dashboard
   label_filter_by_status: Filter by Status
   label_board_issue_unassigned: Unassigned
   label_board_issue_story_points: pts
+  label_sprint_mark_completed: Mark as completed
+  label_sprint_mark_active: Mark as activve  
+  label_sprint_backlog_suggestions: Smart Backlog Suggestions
   permission_view_agile_board: View Agile Board
   permission_edit_agile_board: Edit Agile Board
   permission_manage_sprints: Manage Sprints
   field_difficulty: Difficulty
+  label_sprint_status: Sprint Status
+  label_sprint_status_active: Active
+  label_sprint_status_completed: Complete
+  label_sprint_actions: Actions
+  label_sprint_all_tags: All tags
+  label_sprint_tags: Tags
+  label_remove_sprint: Delete Sprint
+  text_not_found_sprint: No Sprint found.
+
+  label_dashboard_sprint: Sprint dashboard
+  label_dashboard_sprint_total_points: Total Points
+  label_dashboard_sprint_closed_points: Closed Points
+  label_dashboard_sprint_completed_points: Completed Points
+  label_dashboard_sprint_completion_rate: Completion Rate
+  label_dashboard_sprint_remaining_points: Remaining Points
+  label_dashboard_sprint_days_remaining: Days Remaining
+  label_dashboard_sprint_open_issues: Open Issues
+  label_dashboard_sprint_progress: Progress
+
+  label_sprint_charts_normal: Normal Charts
+  label_sprint_charts_difficulty: Difficulty Analytics
+  label_sprint_charts_velocity: Velocity
+  label_sprint_charts_burndown: Burndown
+  label_sprint_charts_cfd: Cumulative Flow Diagram
+  label_sprint_charts_open_closed: Open vs Closed Issues
+  label_sprint_charts_issue_type: Issue Type Breakdown
+  label_sprint_charts_team: Team Contribution
+  label_sprint_ended: Ended
+
+  label_sprint_difficulty_charts_velocity: Velocity by Difficulty
+  label_sprint_difficulty_charts_planned_vs_completed: Planned vs Completed by Difficulty
+  label_sprint_difficulty_charts_burndown: Burndown by Difficulty
+  label_sprint_difficulty_charts_distributionn: Difficulty Distribution
+  label_sprint_difficulty_charts_trend: Difficulty Trend
+  label_sprint_difficulty_team: Team Contribution by Difficulty
+  label_sprint_difficulty_cycle: Difficulty vs Cycle Time
+  label_sprint_difficulty_bugs: Difficulty vs Bugs
+  label_sprint_difficulty_story_points: Story Points by Developer & Difficulty
+
+  label_sprint_issues: Issues in this Sprint
+  text_sprint_drop_issues: Drop issues here to assign
+  text_sprint_unassigned_issues: Unassigned Issues
+  label_back_to_sprint_list: Back to Sprint List
+  label_remove_from_sprint: Remove from Sprint

@@ -6,31 +6,31 @@
   <script>window.projectIdentifier = "<%= @project.identifier %>"</script>
 <% end %>
 
-<h2><%= @sprint.name %> <span style="font-size: 0.8em; color: #888;">(Sprint)</span></h2>
+<h2><%= @sprint.name %> <span style="font-size: 0.8em; color: #888;">(<%= l(:field_sprint) %>)</span></h2>
 
 <div class="sprint-summary box">
-  <p><strong>📅 Start Date:</strong> <%= format_date(@sprint.start_date) %></p>
-  <p><strong>📅 End Date:</strong> <%= format_date(@sprint.end_date) %></p>
-  <p><strong>📈 Total Story Points:</strong> <%= @sprint.total_points %></p>
-  <p><strong>✅ Completed Points:</strong> <%= @sprint.completed_points %></p>
-  <p><strong>📊 Progress:</strong> <%= sprint_progress_percent(@sprint) %>%</p>
-  <p><%= link_to '📊 Dashboard', dashboard_project_sprint_path(@project,@sprint) %></p>
+  <p><strong>📅 <%= l(:field_start_date) %>:</strong> <%= format_date(@sprint.start_date) %></p>
+  <p><strong>📅 <%= l(:field_sprint_end_date) %>:</strong> <%= format_date(@sprint.end_date) %></p>
+  <p><strong>📈 <%= l(:label_dashboard_sprint_total_points) %>:</strong> <%= @sprint.total_points %></p>
+  <p><strong>✅ <%= l(:label_dashboard_sprint_completed_points) %>:</strong> <%= @sprint.completed_points %></p>
+  <p><strong>📊 <%= l(:label_dashboard_sprint_progress) %>:</strong> <%= sprint_progress_percent(@sprint) %>%</p>
+  <p><%= link_to '📊'+l(:label_dashboard_sprint), dashboard_project_sprint_path(@project,@sprint) %></p>
 </div>
 
 <div class="drag-container">
   <!-- Sprint Issues Table -->
   <div class="drag-table">
-    <h3>✅ Issues in this Sprint</h3>
+    <h3>✅ <%= l(:label_sprint_issues) %></h3>
     <table class="list issues-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Subject</th>
-          <th>Status</th>
-          <th>Assigned To</th>
-          <th>Story Points</th>
-          <th>Tags</th>
-          <th>Action</th>
+          <th>#</th>
+          <th><%= l(:field_subject) %></th>
+          <th><%= l(:field_status) %></th>
+          <th><%= l(:field_assigned_to) %></th>
+          <th><%= l(:field_story_points) %></th>
+          <th><%= l(:label_sprint_tags) %></th>
+          <th></th>
         </tr>
       </thead>
       <tbody id="sprint-issues" class="sprint-droppable-area" data-sprint="<%= @sprint.id %>">
@@ -52,13 +52,13 @@
                 <% end %>
               </td>
               <td class="action-cell">
-                <%= link_to 'Remove', update_sprint_project_agile_board_path(@project, id: issue.id, sprint_id: ''),
-                            class: 'icon icon-del remove-sprint-link', title: 'Remove from Sprint' %>
+                <%= link_to sprite_icon('del', l(:button_delete)), update_sprint_project_agile_board_path(@project, id: issue.id, sprint_id: ''),
+                            class: 'icon icon-del remove-sprint-link', title: l(:label_remove_from_sprint) %>
               </td>
             </tr>
           <% end %>
         <% else %>
-          <tr class="droppable-empty"><td colspan="6"><em>Drop issues here to assign</em></td></tr>
+          <tr class="droppable-empty"><td colspan="6"><em><%= l(:text_sprint_drop_issues) %></em></td></tr>
         <% end %>
       </tbody>
     </table>
@@ -66,16 +66,16 @@
 
   <!-- Unassigned Issues Table -->
   <div class="drag-table">
-    <h3>📦 Unassigned Issues</h3>
+    <h3>📦 <%= l(:text_sprint_unassigned_issues) %></h3>
     <table class="list issues-table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Subject</th>
-          <th>Status</th>
-          <th>Assigned To</th>
-          <th>Story Points</th>
-          <th>Tags</th>
+          <th>#</th>
+          <th><%= l(:field_subject) %></th>
+          <th><%= l(:field_status) %></th>
+          <th><%= l(:field_assigned_to) %></th>
+          <th><%= l(:field_story_points) %></th>
+          <th><%= l(:label_sprint_tags) %></th>
         </tr>
       </thead>
       <tbody id="unassigned-issues" class="sprint-droppable-area" data-sprint="">
@@ -96,7 +96,7 @@
             </tr>
           <% end %>
         <% else %>
-          <tr class="droppable-empty"><td colspan="5"><em>Drop issues here to unassign</em></td></tr>
+          <tr class="droppable-empty"><td colspan="5"><em><%= l(:text_sprint_drop_issues) %></em></td></tr>
         <% end %>
       </tbody>
     </table>
@@ -104,6 +104,6 @@
 </div>
 
 <br/>
-<p><%= link_to '⬅ Back to Sprint List', project_sprints_path(@project), class: 'icon icon-back' %></p>
+<p><%= link_to '⬅'+l(:label_back_to_sprint_list), project_sprints_path(@project), class: 'icon icon-back' %></p>
 
 <%= javascript_include_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
