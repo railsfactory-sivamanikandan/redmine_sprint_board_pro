@@ -75,3 +75,12 @@ en:
   text_sprint_unassigned_issues: Unassigned Issues
   label_back_to_sprint_list: Back to Sprint List
   label_remove_from_sprint: Remove from Sprint
+
+  label_sprint_settings_legend: Notifications & Reports
+  label_sprint_settings_notify_on_complete: Notify on sprint completion
+  text_sprint_settings_notify_on_complete: Send email when a sprint is marked as completed
+  label_sprint_settings_monthly_report: Enable monthly report
+  text_sprint_settings_monthly_report: Send monthly sprint reports to managers or custom emails
+  label_sprint_settings_report_day: Monthly report day
+  label_sprint_settings_report_recipients: Monthly report recipients (comma-separated emails)
+  text_sprint_settings_report_recipients: Leave blank to send to Project Managers of each project

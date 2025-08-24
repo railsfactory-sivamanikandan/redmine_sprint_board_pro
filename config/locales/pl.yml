@@ -75,3 +75,12 @@ pl:
   text_sprint_unassigned_issues: Nieprzypisane zagadnienia
   label_back_to_sprint_list: Wróć do listy sprintów
   label_remove_from_sprint: Usuń ze sprintu
+
+  label_sprint_settings_legend: Powiadomienia i raporty
+  label_sprint_settings_notify_on_complete: Powiadom o zakończeniu sprintu
+  text_sprint_settings_notify_on_complete: Wysyła email w monmencie zakończenia sprintu
+  label_sprint_settings_monthly_report: Aktywuj miesięczne raporty
+  text_sprint_settings_monthly_report: Wysyła miesięczne raporty do menadżerów lub na wybrane adresy email
+  label_sprint_settings_report_day: Dzień miesiąca wysłania raportu
+  label_sprint_settings_report_recipients: Odbiorcy miesięcznych raportów (adresy emaile odzielane przecinkiem)
+  text_sprint_settings_report_recipients: Pozostaw puste, aby wysłać do menadżerów projektów każdego projektu
