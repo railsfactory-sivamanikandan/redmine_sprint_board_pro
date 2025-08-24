@@ -27,7 +27,7 @@ class SprintsController < ApplicationController
     @sprint = @project.sprints.build(sprint_params)
     if @sprint.save
       assign_issues_to_sprint
-      redirect_to project_sprints_path(@project), notice: 'Sprint created successfully.'
+      redirect_to project_sprints_path(@project), notice: l(:text_sprint_created)
     else
       render :new
     end
@@ -38,7 +38,7 @@ class SprintsController < ApplicationController
   def update
     if @sprint.update(sprint_params)
       assign_issues_to_sprint
-      redirect_to project_sprints_path(@project), notice: 'Sprint updated successfully.'
+      redirect_to project_sprints_path(@project), notice: l(:text_sprint_updated)
     else
       render :edit
     end
@@ -46,7 +46,7 @@ class SprintsController < ApplicationController
 
   def destroy
     @sprint.destroy
-    redirect_to project_sprints_path(@project), notice: 'Sprint deleted.'
+    redirect_to project_sprints_path(@project), notice: l(:text_sprint_deleted)
   end
 
   def toggle_completed

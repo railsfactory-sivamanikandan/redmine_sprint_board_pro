@@ -30,6 +30,9 @@ en:
   label_sprint_all_tags: All tags
   label_sprint_tags: Tags
   label_remove_sprint: Delete Sprint
+  text_sprint_deleted: Sprint deleted
+  text_sprint_created: Sprint created successfully
+  text_sprint_updated: Sprint updated successfully
   text_not_found_sprint: No Sprint found.
 
   label_dashboard_sprint: Sprint dashboard

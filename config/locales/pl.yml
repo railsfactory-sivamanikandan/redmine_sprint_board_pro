@@ -30,6 +30,9 @@ pl:
   label_sprint_all_tags: Wszystkie tagi
   label_sprint_tags: Tagi
   label_remove_sprint: Usuń sprint
+  text_sprint_deleted: Sprint usunięty pomyślnie
+  text_sprint_created: Sprint utworzony pomyślnie
+  text_sprint_updated: Sprint zaktualizowany pomyślnie
   text_not_found_sprint: Nie znaleziono sprintu
 
   label_dashboard_sprint: Panel sprintu
