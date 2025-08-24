@@ -23,6 +23,10 @@ pl:
   permission_edit_agile_board: Edycja Tablicy Agile
   permission_manage_sprints: Zarządzanie sprintami
   field_difficulty: Złożoność
+  field_difficulty_easy: Łatwe
+  field_difficulty_medium: Średnie
+  field_difficulty_hard: Trudne
+  field_tag_list: Lista tagów
   label_sprint_status: Status sprintu
   label_sprint_status_active: Aktywny
   label_sprint_status_completed: Ukończony
@@ -34,6 +38,7 @@ pl:
   text_sprint_created: Sprint utworzony pomyślnie
   text_sprint_updated: Sprint zaktualizowany pomyślnie
   text_not_found_sprint: Nie znaleziono sprintu
+  text_sprint_not_assigned: Nie przypisany
 
   label_dashboard_sprint: Panel sprintu
   label_dashboard_sprint_total_points: Suma punktów

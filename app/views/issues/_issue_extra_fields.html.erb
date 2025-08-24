@@ -3,19 +3,19 @@
   <div class="splitcontent">
     <div class="splitcontentleft">
       <div class="sprint attribute">
-        <div class="label">Sprint:</div>
+        <div class="label"><%= l(:field_sprint) %>:</div>
         <div class="value">
-          <%= @issue.sprint.present? ? (link_to @issue.sprint.name, project_sprint_path(@project, @issue.sprint)) : 'Not assigned'%>
+          <%= @issue.sprint.present? ? (link_to @issue.sprint.name, project_sprint_path(@project, @issue.sprint)) : l(:text_sprint_not_assigned)%>
         </div>
       </div>
       <div class="story_points attribute">
-        <div class="label">Story Points:</div>
+        <div class="label"><%= l(:field_story_points) %>:</div>
         <div class="value">
           <%= @issue.story_points || '-' %>
         </div>
       </div>
       <div class="difficulty attribute">
-        <div class="label">Difficulty:</div>
+        <div class="label"><%= l(:field_difficulty) %>:</div>
         <div class="value">
           <%= @issue.difficulty ? @issue.difficulty.capitalize : '-' %>
         </div>
@@ -28,7 +28,7 @@
   <div class="splitcontent">
     <div class="splitcontentleft">
       <div class="sprint attribute">
-        <div class="label">Tags</div>
+        <div class="label"><%= l(:label_sprint_tags) %></div>
         <div>
           <% issue.tags.each_with_index do |tag, i| %>
             <span class="issue-tag color-<%= (i % 5) + 1 %>"><%= tag %></span>

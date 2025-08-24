@@ -23,6 +23,10 @@ en:
   permission_edit_agile_board: Edit Agile Board
   permission_manage_sprints: Manage Sprints
   field_difficulty: Difficulty
+  field_difficulty_easy: Easy
+  field_difficulty_medium: Medium
+  field_difficulty_hard: Hard
+  field_tag_list: Tag list
   label_sprint_status: Sprint Status
   label_sprint_status_active: Active
   label_sprint_status_completed: Complete
@@ -34,6 +38,7 @@ en:
   text_sprint_created: Sprint created successfully
   text_sprint_updated: Sprint updated successfully
   text_not_found_sprint: No Sprint found.
+  text_sprint_not_assigned: Not assigned
 
   label_dashboard_sprint: Sprint dashboard
   label_dashboard_sprint_total_points: Total Points
