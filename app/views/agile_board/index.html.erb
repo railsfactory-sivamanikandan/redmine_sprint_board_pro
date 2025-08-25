@@ -18,11 +18,7 @@
     <% if User.current.allowed_to?(:manage_sprints, @project) %>
       <div class="contextual">
           <%= link_to  sprite_icon('add', l(:label_sprint_new)), new_project_sprint_path(@project), class: 'icon icon-add' %>
-            <%= actions_dropdown do %>
-                <%= link_to sprite_icon('list', l(:label_manage_sprint)), project_sprint_path(@project, @selected_sprint), :class => 'icon icon-list' %>
-                <%= link_to sprite_icon('edit', l(:label_edit_sprint)), edit_project_sprint_path(@project, @selected_sprint), :class => 'icon icon-edit' %>
-                <%= link_to sprite_icon('stats', l(:label_dashboard_sprint)), dashboard_project_sprint_path(@project, @selected_sprint), class: 'icon icon-stats' %>
-            <% end %>
+          <%= render partial: 'sprints/context_menu', locals: { project: @project, sprint: @selected_sprint } %>
       </div>
     <% end %>
   </div>
