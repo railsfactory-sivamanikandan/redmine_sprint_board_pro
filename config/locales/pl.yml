@@ -14,7 +14,7 @@ pl:
   label_manage_sprint: Zarządzaj sprintem
   label_edit_sprint: Edytuj sprint
   label_filter_by_status: Filtruj po statusie
-  label_board_issue_unassigned: Nieprzypisane
+  label_board_issue_unassigned: Nieprzypisana
   label_board_issue_story_points: pkt
   label_sprint_mark_completed: Oznacz jako ukończony
   label_sprint_mark_active: Oznacz jako aktywny
