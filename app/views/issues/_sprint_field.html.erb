@@ -8,7 +8,7 @@
         <%= f.number_field :story_points, min: 0, step: "any" %>
       </p>
       <p>
-        <%= f.select :difficulty, [["Easy", "easy"], ["Medium", "medium"], ["Hard", "hard"]],{ include_blank: true },{ class: 'difficulty-select' } %>
+        <%= f.select :difficulty, [[l(:field_difficulty_easy), "easy"], [l(:field_difficulty_medium), "medium"], [l(:field_difficulty_hard), "hard"]],{ include_blank: true },{ class: 'difficulty-select' } %>
       </p>
     </div>
   </div>

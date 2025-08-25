@@ -1,26 +1,26 @@
 <%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
 <div class="header-flex">
-  <h1 class="rsbp-title">Sprint Dashboard - <%= @sprint.name %></h1>
+  <h1 class="rsbp-title"><%= l(:label_dashboard_sprint) %> - <%= @sprint.name %></h1>
   <div class="chart-tabs">
-    <a href="?chart_type=normal" class="chart-tab <%= params[:chart_type] != 'difficulty' ? 'active' : '' %>">Normal Charts</a>
-    <a href="?chart_type=difficulty" class="chart-tab <%= params[:chart_type] == 'difficulty' ? 'active' : '' %>">Difficulty Analytics</a>
+    <a href="?chart_type=normal" class="chart-tab <%= params[:chart_type] != 'difficulty' ? 'active' : '' %>"><%= l(:label_sprint_charts_normal) %></a>
+    <a href="?chart_type=difficulty" class="chart-tab <%= params[:chart_type] == 'difficulty' ? 'active' : '' %>"><%= l(:label_sprint_charts_difficulty) %></a>
   </div>
 </div>
 
 <div class="rsbp-grid">
   <!-- KPI Cards -->
   <div class="dashboard-card kpi">
-    <div class="kpi-title">Total Points</div>
+    <div class="kpi-title"><%= l(:label_dashboard_sprint_total_points) %></div>
     <div class="kpi-value"><%= @velocity[:total] %> SP</div>
   </div>
 
   <div class="dashboard-card kpi">
-    <div class="kpi-title">Closed Points</div>
+    <div class="kpi-title"><%= l(:label_dashboard_sprint_closed_points) %></div>
     <div class="kpi-value"><%= @velocity[:closed] %> SP</div>
   </div>
 
   <div class="dashboard-card kpi">
-    <div class="kpi-title">Completion Rate</div>
+    <div class="kpi-title"><%= l(:label_dashboard_sprint_completion_rate) %></div>
     <% completion_rate = (@velocity[:total].to_f.zero? ? 0 : ((@velocity[:closed].to_f / @velocity[:total].to_f) * 100).round(2)) %>
     <div class="kpi-value"><%= "#{completion_rate}%" %></div>
     <div class="progress-bar">
@@ -29,18 +29,18 @@
   </div>
 
   <div class="dashboard-card kpi">
-    <div class="kpi-title">Remaining Points</div>
+    <div class="kpi-title"><%= l(:label_dashboard_sprint_remaining_points) %></div>
     <div class="kpi-value"><%= (@velocity[:total].to_f - @velocity[:closed].to_f).round(2) %> SP</div>
   </div>
 
   <div class="dashboard-card kpi">
-    <div class="kpi-title">Days Remaining</div>
+    <div class="kpi-title"><%= l(:label_dashboard_sprint_days_remaining) %></div>
     <% days_left = (@sprint.end_date - Date.today).to_i rescue 0 %>
-    <div class="kpi-value"><%= days_left > 0 ? "#{days_left} days" : "Ended" %></div>
+    <div class="kpi-value"><%= days_left > 0 ? l(:'datetime.distance_in_words.x_days', count: days_left) : l(:label_sprint_ended) %></div>
   </div>
 
   <div class="dashboard-card kpi">
-    <div class="kpi-title">Open Issues</div>
+    <div class="kpi-title"><%= l(:label_dashboard_sprint_open_issues) %></div>
     <div class="kpi-value"><%= @sprint.issues.open.count rescue 0 %></div>
   </div>
 </div>

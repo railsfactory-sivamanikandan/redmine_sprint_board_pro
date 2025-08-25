@@ -1,0 +1,12 @@
+
+<%= actions_dropdown do %>
+    <%= link_to sprite_icon('stats', l(:label_dashboard_sprint)), dashboard_project_sprint_path(@project, sprint), class: 'icon icon-stats' %>
+    <%= link_to sprite_icon('list', l(:label_manage_sprint)), project_sprint_path(@project, sprint), :class => 'icon icon-list' %>
+    <%= link_to sprite_icon('edit', l(:label_edit_sprint)), edit_project_sprint_path(@project, sprint), :class => 'icon icon-edit' %>
+    <% if sprint.completed? %>
+        <%= link_to sprite_icon('checked', l(:label_sprint_mark_active)), toggle_completed_project_sprint_path(@project, sprint), method: :patch, class: 'icon icon-checked', data: { turbo: false } %>
+    <% else %>
+        <%= link_to sprite_icon('checked', l(:label_sprint_mark_completed)), toggle_completed_project_sprint_path(@project, sprint), method: :patch, class: 'icon icon-unchecked', data: { turbo: false } %>
+    <% end %>
+    <%= link_to sprite_icon('del', l(:label_remove_sprint)), project_sprint_path(@project, sprint), method: :delete, data: { confirm: l(:text_are_you_sure) }, class: 'icon icon-del' %>
+<% end %>

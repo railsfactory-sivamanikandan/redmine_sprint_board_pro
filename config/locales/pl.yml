@@ -1,0 +1,113 @@
+pl:
+  field_sprint: Sprint
+  field_story_points: Story pointy
+  field_board_position: Pozycja tablicy
+  field_sprint_select: Wybierz sprint
+  field_sprint_end_date: Data zakończenia
+  field_sprint_name: Nazwa sprintu
+  button_sprint_show_suggestions: Pokaż inteligentne podpowiedzi
+  button_sprint_update: Zaktualizuj sprint
+  label_agile_board: Tablica Agile
+  label_manage_sprints: Zarządzaj sprintami
+  label_sprint_plural: Sprinty
+  label_sprint_new: Nowy sprint
+  label_manage_sprint: Zarządzaj sprintem
+  label_edit_sprint: Edytuj sprint
+  label_filter_by_status: Filtruj po statusie
+  label_board_issue_unassigned: Nieprzypisana
+  label_board_issue_story_points: pkt
+  label_sprint_mark_completed: Oznacz jako ukończony
+  label_sprint_mark_active: Oznacz jako aktywny
+  label_sprint_backlog_suggestions: Inteligentne podpowiedzi backlogu
+  permission_view_agile_board: Wyświetlanie Tablicy Agile
+  permission_edit_agile_board: Edycja Tablicy Agile
+  permission_manage_sprints: Zarządzanie sprintami
+  field_difficulty: Złożoność
+  field_difficulty_easy: Łatwe
+  field_difficulty_medium: Średnie
+  field_difficulty_hard: Trudne
+  field_tag_list: Lista tagów
+  label_sprint_status: Status sprintu
+  label_sprint_status_active: Aktywny
+  label_sprint_status_completed: Ukończony
+  label_sprint_actions: Akcje
+  label_sprint_all_tags: Wszystkie tagi
+  label_sprint_tags: Tagi
+  label_remove_sprint: Usuń sprint
+  text_sprint_deleted: Sprint usunięty pomyślnie
+  text_sprint_created: Sprint utworzony pomyślnie
+  text_sprint_updated: Sprint zaktualizowany pomyślnie
+  text_not_found_sprint: Nie znaleziono sprintu
+  text_sprint_not_assigned: Nie przypisany
+
+  label_dashboard_sprint: Panel sprintu
+  label_dashboard_sprint_total_points: Suma punktów
+  label_dashboard_sprint_closed_points: Zamknięte punkty
+  label_dashboard_sprint_completed_points: Ukończone punkty
+  label_dashboard_sprint_completion_rate: Wskaźnik ukończenia
+  label_dashboard_sprint_remaining_points: Pozostałe punkty
+  label_dashboard_sprint_days_remaining: Pozostałe dni
+  label_dashboard_sprint_open_issues: Otwarte zagadnienia
+  label_dashboard_sprint_progress: Progress
+
+  label_sprint_charts_normal: Normalne wykresy
+  label_sprint_charts_difficulty: Analiza według złożoności
+  label_sprint_charts_velocity: Wykres prędkości
+  label_sprint_charts_burndown: Wykres spalania
+  label_sprint_charts_cfd: Wykres skumulowanego przepływu
+  label_sprint_charts_open_closed: Otwarte vs zamknięte zgłoszenia
+  label_sprint_charts_issue_type: Podział według typu zgłoszeń
+  label_sprint_charts_team: Wkład zespołowy
+  label_sprint_ended: Zakończony
+
+  label_sprint_difficulty_charts_velocity: Prędkość wg złożoności
+  label_sprint_difficulty_charts_planned_vs_completed: Planowane vs zrealizowane wg złożoności
+  label_sprint_difficulty_charts_burndown: Wykres spalania wg złożoności
+  label_sprint_difficulty_charts_distributionn: Rozkład złożoności
+  label_sprint_difficulty_charts_trend: Trend złożoności
+  label_sprint_difficulty_team: Wkład zespołu wg złożoności
+  label_sprint_difficulty_cycle: Złożoność vs czas cyklu
+  label_sprint_difficulty_bugs: Złożoność vs błędy
+  label_sprint_difficulty_story_points: Story points wg programisty i złożoności
+
+  label_sprint_issues: Zagadnienia w sprincie
+  text_sprint_drop_issues: Przeciągnij zagadnienie aby je przypisać
+  text_sprint_unassigned_issues: Nieprzypisane zagadnienia
+  label_back_to_sprint_list: Wróć do listy sprintów
+  label_remove_from_sprint: Usuń ze sprintu
+
+  label_sprint_settings_legend: Powiadomienia i raporty
+  label_sprint_settings_notify_on_complete: Powiadom o zakończeniu sprintu
+  text_sprint_settings_notify_on_complete: Wysyła email w monmencie zakończenia sprintu
+  label_sprint_settings_monthly_report: Aktywuj miesięczne raporty
+  text_sprint_settings_monthly_report: Wysyła miesięczne raporty do menadżerów lub na wybrane adresy email
+  label_sprint_settings_report_day: Dzień miesiąca wysłania raportu
+  label_sprint_settings_report_recipients: Odbiorcy miesięcznych raportów (adresy emaile odzielane przecinkiem)
+  text_sprint_settings_report_recipients: Pozostaw puste, aby wysłać do menadżerów projektów każdego projektu
+
+  text_email_report_title: Miesięczny raport sprintu
+  text_email_report_summary: Podsumowanie
+  text_email_report_metric: Metryka
+  text_email_report_total_sprints: Łączna liczba sprintów
+  text_email_report_completed_sprints: Ukończone sprinty
+  text_email_report_open_sprints: Otwarte sprinty
+  text_email_report_issues_resolved: Rozwiązane zagadnienia
+  text_email_report_closed_issues_period: Łączna ilość rozwiązanych zagadnień
+  text_email_report_story_points_completed: Ukończone story pointy
+  text_email_report_no_sprints_completed: Nie ukończono żadnego sprintu w okresie raportu
+  text_email_report_difficulty_breakdown: Podział wg złożoności
+  text_email_report_closed_issues: Closed Issues
+  text_email_report_unspecified: Nieokreślona
+  text_email_report_no_closed_issues: Brak zamkniętych zagadnień z przypisaną złożonością w tym okresie raportowania
+  text_email_report_detailed_charts: Aby zobaczyć szczegółowe wykresy burndown, trendy velocity i analizę backlogu, odwiedź
+  text_email_report_project_dashboard: Panel projektu
+  text_email_report_subscribe_info: Otrzymujesz ten raport, ponieważ subskrybujesz aktualizacje sprintu dla projektu
+  text_email_report_manage_notifications: Zarządzaj ustawieniami powiadomień
+  
+  text_email_report_sprint_completed: Sprint ukończony
+  text_email_report_project: Projekt
+  text_email_report_duration: Okres
+  text_email_report_view_dashboard: Zobacz panel sprintu
+  text_email_report_notification_info: To automatyczna wiadomość z
+  
+

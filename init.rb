@@ -17,8 +17,8 @@ Redmine::Plugin.register :redmine_sprint_board_pro do
     permission :manage_sprints, { sprints: [:new, :create, :index, :edit, :update, :destroy, :show] }
   end
 
-  menu :project_menu, :agile_board, { controller: 'agile_board', action: 'index' }, caption: 'Agile Board', after: :activity, param: :project_id
-  menu :project_menu, :sprints, { controller: 'sprints', action: 'index' }, caption: 'Manage Sprints', after: :agile_board, param: :project_id
+  menu :project_menu, :agile_board, { controller: 'agile_board', action: 'index' }, caption: :label_agile_board, after: :activity, param: :project_id
+  menu :project_menu, :sprints, { controller: 'sprints', action: 'index' }, caption: :label_manage_sprints, after: :agile_board, param: :project_id
 
   settings default: {
     'notify_on_sprint_completed' => '0',

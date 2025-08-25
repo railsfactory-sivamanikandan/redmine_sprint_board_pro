@@ -1,46 +1,44 @@
 <%= stylesheet_link_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
 <div class="agile-board-container">
-  <div class="agile-board-header">
-    <div class="agile-controls">
-      <div>
-        <h2>Sprints for <%= @project.name %></h2>
-        <div class="filters">
-          <%= form_with url: project_sprints_path(@project), method: :get, local: true, class: 'query-form' do %>
-            <label for="status_filter">Status:</label>
-            <select name="status" id="status_filter" onchange="this.form.submit()">
-              <option value="">All</option>
-              <option value="active" <%= 'selected' if params[:status] == 'active' %>>Active</option>
-              <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Completed</option>
-            </select>
-            <label for="tag_filter">Tag:</label>
-            <select name="tag" id="tag_filter" onchange="this.form.submit()">
-              <option value="">All Tags</option>
-              <% Issue.tag_counts.each do |tag| %>
-                <option value="<%= tag.name %>" <%= 'selected' if params[:tag] == tag.name %>>
-                  <%= tag.name %>
-                </option>
-              <% end %>
-            </select>
-          <% end %>
-         </div>
+    <div>
+      <div class="agile-board-header">
+        <h2><%= l(:label_sprint_plural) %></h2>
+        <div class="contextual">
+          <%= link_to  sprite_icon('add', l(:label_sprint_new)), new_project_sprint_path(@project), class: 'icon icon-add' %>
+        </div>
       </div>
-      <div>
-        <%= link_to 'New Sprint', new_project_sprint_path(@project), class: 'icon icon-add' %>
-      </div>
+      <div class="filters">
+        <%= form_with url: project_sprints_path(@project), method: :get, local: true, class: 'query-form' do %>
+          <label for="status_filter">Status:</label>
+          <select name="status" id="status_filter" onchange="this.form.submit()">
+            <option value=""><%= l(:label_all) %></option>
+            <option value="active" <%= 'selected' if params[:status] == 'active' %>><%= l(:label_sprint_status_active) %></option>
+            <option value="completed" <%= 'selected' if params[:status] == 'completed' %>><%= l(:label_sprint_status_completed) %></option>
+          </select>
+          <label for="tag_filter">Tag:</label>
+          <select name="tag" id="tag_filter" onchange="this.form.submit()">
+            <option value=""><%= l(:label_sprint_all_tags) %></option>
+            <% Issue.tag_counts.each do |tag| %>
+              <option value="<%= tag.name %>" <%= 'selected' if params[:tag] == tag.name %>>
+                <%= tag.name %>
+              </option>
+            <% end %>
+          </select>
+        <% end %>
+        </div>
     </div>
-  </div>
   <div class="sprints-content">
-    <table class="list">
+    <table class="list"  style="overflow: visible;">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Total Story Points</th>
-          <th>Status</th>
-          <th>Issues</th>
-          <th>Actions</th>
+          <th>#</th>
+          <th><%= l(:field_sprint_name) %></th>
+          <th><%= l(:field_start_date) %></th>
+          <th><%= l(:field_sprint_end_date) %></th>
+          <th><%= l(:label_dashboard_sprint_total_points) %></th>
+          <th><%= l(:label_sprint_status) %></th>
+          <th><%= l(:label_issue_plural) %></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -51,24 +49,19 @@
             <td><%= sprint.start_date %></td>
             <td><%= sprint.end_date %></td>
             <td><%= sprint.total_points %></td>
-            <td><%= sprint.completed? ? 'Completed' : 'Active' %></td>
+            <td><%= sprint.completed? ? l(:label_sprint_status_completed) : l(:label_sprint_status_active) %></td>
             <td><%= sprint.issues.count %></td>
             <td>
-              <%= link_to 'Edit', edit_project_sprint_path(@project, sprint), class: 'icon icon-edit' %>
-              <%= link_to 'Delete', project_sprint_path(@project, sprint), method: :delete, data: { confirm: 'Are you sure?' }, class: 'icon icon-del' %>
-              <%= link_to '📊 Dashboard', dashboard_project_sprint_path(@project,sprint), class: 'icon icon-chart-bar' %>
-              <% if sprint.completed? %>
-                <%= link_to 'Mark as Active', toggle_completed_project_sprint_path(@project, sprint), method: :patch, class: 'icon icon-checked', data: { turbo: false } %>
-              <% else %>
-                <%= link_to 'Mark as Completed', toggle_completed_project_sprint_path(@project, sprint), method: :patch, class: 'icon icon-unchecked', data: { turbo: false } %>
-              <% end %>
+              <div id="contextual">
+                  <%= render partial: 'sprints/context_menu', locals: { project: @project, sprint: sprint } %>
+              </div>
             </td>
           </tr>
         <% end %>
         <% if @sprints.count == 0 %>
         <tr>
           <td colspan="7">
-            No Sprint found.
+            <%= l(:text_not_found_sprint) %>
           </td>
         </tr>
         <% end %>

@@ -1,13 +1,13 @@
 <div class="rsbp-grid" style="margin-top: 20px;">
-  <div class="dashboard-card large"><div class="dashboard-card-header">Velocity by Difficulty</div><canvas id="velocityByDifficultyChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Planned vs Completed by Difficulty</div><canvas id="plannedVsCompletedChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Burndown by Difficulty</div><canvas id="burndownByDifficultyChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty Distribution</div><canvas id="difficultyDistributionChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty Trend</div><canvas id="difficultyTrendChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Team Contribution by Difficulty</div><canvas id="teamContributionDiffChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty vs Cycle Time</div><canvas id="difficultyVsCycleChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Difficulty vs Bugs</div><canvas id="difficultyVsBugsChart"></canvas></div>
-  <div class="dashboard-card large"><div class="dashboard-card-header">Story Points by Developer & Difficulty</div><canvas id="developerDifficultyChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_charts_velocity) %></div><canvas id="velocityByDifficultyChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_charts_planned_vs_completed) %></div><canvas id="plannedVsCompletedChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_charts_burndown) %></div><canvas id="burndownByDifficultyChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_charts_distributionn) %></div><canvas id="difficultyDistributionChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_charts_trend) %></div><canvas id="difficultyTrendChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_team) %></div><canvas id="teamContributionDiffChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_cycle) %></div><canvas id="difficultyVsCycleChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_bugs) %></div><canvas id="difficultyVsBugsChart"></canvas></div>
+  <div class="dashboard-card large"><div class="dashboard-card-header"><%= l(:label_sprint_difficulty_story_points) %></div><canvas id="developerDifficultyChart"></canvas></div>
 </div>
 <%= javascript_include_tag 'chart4', plugin: 'redmine_sprint_board_pro' %>
 <%= javascript_include_tag 'difficulty_charts', plugin: 'redmine_sprint_board_pro' %>

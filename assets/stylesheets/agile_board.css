@@ -1,66 +1,75 @@
 .agile-board-container {
-  padding: 20px;
-  background: #f8f9fa;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 300px);
+  height: 100%;
 }
-
 .agile-board-header {
-  align-items: center;
-  margin-bottom: 30px;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.agile-controls {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 20px;
+}
+.agile-board-sprint-select {
+  margin-bottom: 20px;
 }
 
 .agile-board-listing {
   display: flex;
   gap: 20px;
-  padding-bottom: 2rem;
-  overflow-x: auto;
+  height: 100%;
 }
 
 .status-column {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  max-height: 100%;
   background: #f6f7f9;
-  border-radius: 10px;
-  padding: 10px;
-  min-width: 280px;
-  max-width: 300px;
-  flex: 0 0 auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  padding-bottom: 12px;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.status-header h3 {
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 10px;
-  padding: 8px 0;
-  background-color: #4f80a8;
-  border-radius: 5px;
-  color: #fff;
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 22px 8px 22px;
+}
+
+.status-header > h3 {
+  margin: 0;
 }
 
 .card-list {
   display: flex;
   flex-direction: column;
+  min-width: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
   gap: 12px;
+  padding: 10px;
 }
 
 .card {
+  display: flex;
+  min-width: 300px;
+  flex-direction: column;
   background: white;
   padding: 12px;
   border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
   cursor: grab;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sortable-ghost {
+  transform: rotate(-2deg);
+}
+
+.sortable-chosen {
+  transform: rotate(2deg);
 }
 
 .card:hover {
@@ -88,19 +97,23 @@
   background-color: #ff9800;
   color: white;
 }
-.priority-normal, .priority-critical-p2 {
+.priority-normal,
+.priority-critical-p2 {
   background-color: #2196f3;
   color: white;
 }
-.priority-low, .priority-non-critical-p3 {
+.priority-low,
+.priority-non-critical-p3 {
   background-color: #4caf50;
   color: white;
 }
-.priority-immediate, .priority-showstopper-p1 {
+.priority-immediate,
+.priority-showstopper-p1 {
   background-color: #9c27b0;
   color: white;
 }
-.priority-lowest, .priority-trivial-p4 {
+.priority-lowest,
+.priority-trivial-p4 {
   background-color: #607d8b;
   color: white;
 }
@@ -134,7 +147,8 @@
   border-collapse: collapse;
   margin-top: 1em;
 }
-.issues-table th, .issues-table td {
+.issues-table th,
+.issues-table td {
   padding: 0.5em;
   border: 1px solid #ccc;
 }
@@ -147,10 +161,7 @@
   cursor: grab;
 }
 .droppable-area {
-  background: #f1f8ff;
-  min-height: 360px;
-  max-height: 400px;
-  overflow-y: auto;
+  background: #f6f7f9;
 }
 .droppable-area.dragover {
   outline: 2px dashed #007acc;
@@ -212,7 +223,8 @@
   min-width: 400px;
 }
 
-.issues-table th, .issues-table td {
+.issues-table th,
+.issues-table td {
   padding: 0.5em;
   vertical-align: middle;
 }
@@ -222,13 +234,12 @@
 }
 
 .status-column.allowed-drop {
-  border: 2px solid green;
-  background-color: #eaffea;
+  box-shadow: 1px 1px 8px green;
 }
 
 .status-column.not-allowed-drop {
-  border: 2px solid red;
-  background-color: #ffeaea;
+  box-shadow: 1px 1px 5px red;
+  background-color: #fff6f6;
 }
 
 .rsbp-title {
@@ -246,7 +257,7 @@
 .dashboard-card {
   background: #fafbfc;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -283,7 +294,6 @@
   overflow: hidden;
 }
 .progress-bar-fill {
-  height: 100%;
   background: #4e79a7;
 }
 
@@ -313,7 +323,6 @@
 
 /* Also control the canvas itself */
 .card canvas {
-  max-height: 100%;
   width: 100% !important;
 }
 
@@ -364,6 +373,13 @@
 
 #status-filter-form label {
   cursor: pointer;
+}
+
+.agile-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
 }
 
 .agile-controls .filters form {
