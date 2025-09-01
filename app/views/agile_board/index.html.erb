@@ -14,7 +14,7 @@
       <div class="filters">
         <%= form_with url: project_agile_board_path(@project), method: :get, local: true do |form| %>
           <label for="sprint_id">Select Sprint:</label>
-          <%= select_tag :sprint_id, options_from_collection_for_select(@sprints, :id, :name, params[:sprint_id]), onchange: 'this.form.submit();' %>
+          <%= select_tag :sprint_id, options_from_collection_for_select(@sprints, :id, :name, params[:sprint_id]), include_blank: 'All', onchange: 'this.form.submit();' %>
         <% end %>
       </div>
       <div>
@@ -25,21 +25,93 @@
         <% end %>
       </div>
     </div>
-  </div>
+ </div>
 
-  <h2 class="agile-board-title">Agile Board for <%= @project.name %></h2>
+  <%= form_tag(project_agile_board_path(@project), method: :get, id: 'query_form', class: 'query-form') do %>
+    <%= hidden_field_tag 'project_id', @project.id %>
+    <fieldset id="filters" class="collapsible">
+      <legend onclick="toggleFieldset(this);" class="icon icon-collapsed"><%= l(:label_filter_plural) %></legend>
+      <div style="display: none;">
+        <table class="filters-table">
+          <tbody>
+            <!-- Status Filter -->
+            <tr class="filter">
+              <td class="field">
+                <%= label_tag 'status_filter', l(:field_status) %>
+              </td>
+              <td colspan="2" class="values">
+                <div class="status-checkboxes">
+                  <div class="checkbox-group">
+                    <%= check_box_tag 'select_all_statuses', '1', false,
+                        { id: 'select_all_statuses',
+                          onchange: 'toggleAllStatuses(this.checked)' } %>
+                    <%= label_tag 'select_all_statuses', 'Select All', class: 'select-all-label' %>
+                  </div>
+                  <% IssueStatus.sorted.each do |status| %>
+                    <div class="checkbox-group">
+                      <%= check_box_tag 'v[status_id][]', status.id,
+                          @query.filtered_statuses&.include?(status.id),
+                          { id: "status_#{status.id}",
+                            class: 'status-checkbox' } %>
+                      <%= label_tag "status_#{status.id}", status.name %>
+                    </div>
+                  <% end %>
+                </div>
+                <!-- Hidden field to maintain the operator -->
+                <%= hidden_field_tag 'op[status_id]', '=' %>
+                <%= hidden_field_tag :sprint_id, @selected_sprint&.id %>
+              </td>
+              <td>
+                <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="buttons">
+          <%= link_to_function l(:button_apply), '$("#query_form").submit()', class: 'icon icon-checked' %>
+          <%= link_to l(:button_clear), { project_id: @project }, class: 'icon icon-reload' %>
+        </p>
+
+        <% if User.current.allowed_to?(:save_queries, @project) %>
+          <div class="query-save-section">
+            <%= text_field_tag 'query[name]', @query.name, placeholder: l(:field_name), class: 'small' %>
+            <%= select_tag 'query[visibility]',
+                options_for_select([
+                  [l(:label_visibility_private), 0],
+                  [l(:label_visibility_public), 2]
+                ], @query.visibility),
+                class: 'small' %>
+            <%= submit_tag l(:button_save), name: 'save_query', class: 'small' %>
+          </div>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+
+  <!-- Saved Queries Dropdown -->
+  <% if @project.agile_queries.visible(User.current).any? %>
+    <p>
+      <%= label_tag 'query_id', l(:label_query) + ':' %>
+      <%= select_tag 'query_id',
+          options_from_collection_for_select(@project.agile_queries.visible(User.current), :id, :name, @query.id),
+          { include_blank: l(:label_none),
+            onchange: "if (this.value != '') { window.location = '#{project_agile_board_path(@project)}?query_id=' + this.value; }",
+            class: 'small' } %>
+    </p>
+  <% end %>
 
   <div class="agile-board-listing">
     <% @statuses.each do |status| %>
       <div class="status-column" data-status-id="<%= status.id %>">
         <div class="status-header">
-          <h3><%= status.name %> (<%= (@issues[status] || []).size%>)</h3>
+          <h3><%= status.name %> (<%= (@issues[status] || []).size %>)</h3>
         </div>
         <div class="card-list droppable-area" data-status-id="<%= status.id %>">
           <% (@issues[status] || []).each do |issue| %>
             <% priority_name = issue.priority.try(:name).to_s.parameterize %>
             <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>" data-lock-version="<%= issue.lock_version %>">
-              <div class="card-title"><%= link_to "##{issue.id}", issue_path(issue) %> : <%= issue.subject%></div>
+              <div class="card-title"><%= link_to "##{issue.id}", issue_path(issue) %> : <%= issue.subject %></div>
               <div class="card-meta">
                 <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span><br>
                 <span>🎯 <%= issue.story_points || 0 %> pts</span><br />
