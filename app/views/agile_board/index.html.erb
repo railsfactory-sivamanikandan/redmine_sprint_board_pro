@@ -47,15 +47,17 @@
                           onchange: 'toggleAllStatuses(this.checked)' } %>
                     <%= label_tag 'select_all_statuses', 'Select All', class: 'select-all-label' %>
                   </div>
-                  <% IssueStatus.sorted.each do |status| %>
-                    <div class="checkbox-group">
-                      <%= check_box_tag 'v[status_id][]', status.id,
-                          @query.filtered_statuses&.include?(status.id),
-                          { id: "status_#{status.id}",
-                            class: 'status-checkbox' } %>
-                      <%= label_tag "status_#{status.id}", status.name %>
-                    </div>
-                  <% end %>
+                  <div id="sprint-board-status-wrapper">
+                    <% IssueStatus.sorted.each do |status| %>
+                      <div class="checkbox-group">
+                        <%= check_box_tag 'v[status_id][]', status.id,
+                            @query.filtered_statuses&.include?(status.id),
+                            { id: "status_#{status.id}",
+                              class: 'status-checkbox' } %>
+                        <%= label_tag "status_#{status.id}", status.name %>
+                      </div>
+                    <% end %>
+                  </div>
                 </div>
                 <!-- Hidden field to maintain the operator -->
                 <%= hidden_field_tag 'op[status_id]', '=' %>

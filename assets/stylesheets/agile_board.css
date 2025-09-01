@@ -377,3 +377,9 @@
   overflow-y: auto;
   margin-bottom: 21px;
 }
+
+#sprint-board-status-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  min-width: 200px;
+}
