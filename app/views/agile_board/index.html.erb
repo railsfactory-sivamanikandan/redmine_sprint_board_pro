@@ -26,107 +26,435 @@
       </div>
     </div>
  </div>
-
-  <%= form_tag(project_agile_board_path(@project), method: :get, id: 'query_form', class: 'query-form') do %>
-    <%= hidden_field_tag 'project_id', @project.id %>
-    <fieldset id="filters" class="collapsible">
-      <legend onclick="toggleFieldset(this);" class="icon icon-collapsed"><%= l(:label_filter_plural) %></legend>
-      <div style="display: none;">
-        <table class="filters-table">
-          <tbody>
-            <!-- Status Filter -->
-            <tr class="filter">
-              <td class="field">
-                <%= label_tag 'status_filter', l(:field_status) %>
-              </td>
-              <td colspan="2" class="values">
-                <div class="status-checkboxes">
-                  <div class="checkbox-group">
-                    <%= check_box_tag 'select_all_statuses', '1', false,
-                        { id: 'select_all_statuses',
-                          onchange: 'toggleAllStatuses(this.checked)' } %>
-                    <%= label_tag 'select_all_statuses', 'Select All', class: 'select-all-label' %>
-                  </div>
-                  <div id="sprint-board-status-wrapper">
-                    <% IssueStatus.sorted.each do |status| %>
-                      <div class="checkbox-group">
-                        <%= check_box_tag 'v[status_id][]', status.id,
-                            @query.filtered_statuses&.include?(status.id),
-                            { id: "status_#{status.id}",
-                              class: 'status-checkbox' } %>
-                        <%= label_tag "status_#{status.id}", status.name %>
-                      </div>
-                    <% end %>
-                  </div>
-                </div>
-                <!-- Hidden field to maintain the operator -->
-                <%= hidden_field_tag 'op[status_id]', '=' %>
-                <%= hidden_field_tag :sprint_id, @selected_sprint&.id %>
-              </td>
-              <td>
-                <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p class="buttons">
-          <%= link_to_function l(:button_apply), '$("#query_form").submit()', class: 'icon icon-checked' %>
-          <%= link_to l(:button_clear), { project_id: @project }, class: 'icon icon-reload' %>
-        </p>
-
-        <% if User.current.allowed_to?(:save_queries, @project) %>
-          <div class="query-save-section">
-            <%= text_field_tag 'query[name]', @query.name, placeholder: l(:field_name), class: 'small' %>
+  <div class="box">
+    <%= form_tag(project_agile_board_path(@project), method: :get, id: 'query_form', class: 'query-form') do %>
+      <%= hidden_field_tag 'project_id', @project.id %>
+      <!-- Save Query Section (hidden by default) -->
+      <% if User.current.allowed_to?(:save_queries, @project) %>
+        <div id="query-save-section" class="query-save-section tabular" style="display: none;">
+          <p>
+            <%= label_tag 'query[name]', l(:field_name) %>
+            <%= text_field_tag 'query[name]', @query.name, placeholder: l(:field_name), size: 80 %>
+          </p>
+          <p>
+            <%= label_tag 'query[description]', l(:field_description) %>
+            <%= text_field_tag 'query[description]', @query.description, placeholder: l(:field_description), size: 80 %>
+          </p>
+          <p>
+            <%= label_tag 'query[visibility]', l(:field_visible) %>
             <%= select_tag 'query[visibility]',
-                options_for_select([
-                  [l(:label_visibility_private), 0],
-                  [l(:label_visibility_public), 2]
-                ], @query.visibility),
-                class: 'small' %>
+              options_for_select([
+                [l(:label_visibility_private), 0],
+                [l(:label_visibility_public), 2]
+              ], @query.visibility),
+              class: 'small' %>
+          </p>
+          <p>
             <%= submit_tag l(:button_save), name: 'save_query', class: 'small' %>
-          </div>
-        <% end %>
-      </div>
-    </fieldset>
-  <% end %>
+            <%= link_to l(:button_cancel), '#', onclick: 'hideQuerySaveForm(); return false;', class: 'small' %>
+          </p>
+        </div>
+      <% end %>
+      <div id="query_form_with_buttons" class="hide-when-print">
+        <div id="query_form_content">
+          <fieldset id="filters" class="collapsible">
+            <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+              <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-731dc012.svg#icon--angle-right"></use></svg>
+              <%= l(:label_filter_plural) %>
+            </legend>
+            <div id="filters-table">
+              <div class="filter">
+                <div class="field">
+                  <%= label_tag 'status_filter', l(:field_status) %>
+                </div>
+                <div class="values">
+                  <div class="status-checkboxes">
+                    <div class="checkbox-group">
+                      <%= check_box_tag 'select_all_statuses', '1', false,
+                          { id: 'select_all_statuses',
+                            onchange: 'toggleAllStatuses(this.checked)' } %>
+                      <%= label_tag 'select_all_statuses', 'Select All', class: 'select-all-label' %>
+                    </div>
+                    <div id="sprint-board-status-wrapper">
+                      <% IssueStatus.sorted.each do |status| %>
+                        <div class="checkbox-group">
+                          <%= check_box_tag 'v[status_id][]', status.id,
+                              @query.filtered_statuses&.include?(status.id),
+                              { id: "status_#{status.id}",
+                                class: 'status-checkbox' } %>
+                          <%= label_tag "status_#{status.id}", status.name %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                  <%= hidden_field_tag 'op[status_id]', '=' %>
+                  <%= hidden_field_tag :sprint_id, @selected_sprint&.id %>
+                </div>
+                <div>
+                  <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
+                </div>
+              </div>
+              <div class="filter">
+                <div class="field">
+                  <%= label_tag 'priority_filter', l(:field_priority) %>
+                </div>
+                <div colspan="2" class="values">
+                  <%= select_tag 'v[priority_id][]',
+                      options_from_collection_for_select(IssuePriority.active, :id, :name,
+                        params.dig(:v, :priority_id) || []),
+                      { multiple: true, size: 5, class: 'filter-select' } %>
+                  <%= hidden_field_tag 'op[priority_id]', '=' %>
+                </div>
+                <div>
+                  <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
+                </div>
+              </div>
+              <div class="filter">
+                <div class="field">
+                  <%= label_tag 'tracker_filter', l(:field_tracker) %>
+                </div>
+                <div colspan="2" class="values">
+                  <%= select_tag 'v[tracker_id][]',
+                      options_from_collection_for_select(@project.trackers, :id, :name,
+                        params.dig(:v, :tracker_id) || []),
+                      { multiple: true, size: 4, class: 'filter-select' } %>
+                  <%= hidden_field_tag 'op[tracker_id]', '=' %>
+                </div>
+                <div>
+                  <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
+                </div>
+              </div>
 
-  <!-- Saved Queries Dropdown -->
-  <% if @project.agile_queries.visible(User.current).any? %>
-    <p>
-      <%= label_tag 'query_id', l(:label_query) + ':' %>
-      <%= select_tag 'query_id',
-          options_from_collection_for_select(@project.agile_queries.visible(User.current), :id, :name, @query.id),
-          { include_blank: l(:label_none),
-            onchange: "if (this.value != '') { window.location = '#{project_agile_board_path(@project)}?query_id=' + this.value; }",
-            class: 'small' } %>
-    </p>
-  <% end %>
+              <div class="filter">
+                <div class="field">
+                  <%= label_tag 'assigned_to_filter', l(:field_assigned_to) %>
+                </div>
+                <div colspan="2" class="values">
+                  <%= select_tag 'v[assigned_to_id][]',
+                      options_from_collection_for_select(@project.assignable_users, :id, :name,
+                        params.dig(:v, :assigned_to_id) || []),
+                      { multiple: true, size: 5, class: 'filter-select',
+                        include_blank: l(:label_none) } %>
+                  <%= hidden_field_tag 'op[assigned_to_id]', '=' %>
+                </div>
+                <div>
+                  <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
+                </div>
+              </div>
+              <div class="filter">
+                <div class="field">
+                  <%= label_tag 'story_points_filter', 'Story Points' %>
+                </div>
+                <div class="operator">
+                  <%= select_tag 'op[story_points]',
+                      options_for_select([
+                        ['=', '='],
+                        ['>=', '>='],
+                        ['<=', '<='],
+                        ['><', '><'],
+                        ['!*', '!*'],
+                        ['*', '*']
+                      ], params.dig(:op, :story_points) || '='),
+                      { class: 'operator-select' } %>
+                </div>
+                <div class="values">
+                  <%= text_field_tag 'v[story_points][]',
+                      params.dig(:v, :story_points)&.first,
+                      { class: 'value-input', placeholder: 'Points' } %>
+                  <% if params.dig(:op, :story_points) == '><' %>
+                    <%= text_field_tag 'v[story_points][]',
+                        params.dig(:v, :story_points)&.second,
+                        { class: 'value-input', placeholder: 'To' } %>
+                  <% end %>
+                </div>
+                <div>
+                  <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
+                </div>
+              </div>
+              <div class="filter">
+                <div class="field">
+                  <%= label_tag 'difficulty_filter', 'Difficulty' %>
+                </div>
+                <div colspan="2" class="values">
+                  <%= select_tag 'v[difficulty][]',
+                      options_for_select([
+                        ['Easy', 'easy'],
+                        ['Medium', 'medium'],
+                        ['Hard', 'hard']
+                      ], params.dig(:v, :difficulty) || []),
+                      { multiple: true, size: 3, class: 'filter-select' } %>
+                  <%= hidden_field_tag 'op[difficulty]', '=' %>
+                </div>
+                <div>
+                  <%= link_to_function '', 'removeFilter(this)', class: 'icon icon-del', title: l(:button_delete) %>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+            <!-- Column Display Options -->
+            <fieldset id="filters" class="collapsible collapsed">
+              <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+                <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-731dc012.svg#icon--angle-right"></use></svg>
+                <%= l(:label_options) %>
+              </legend>
+              <div style="display: none;">
+                <table class="columns-table">
+                  <tbody>
+                    <div>
+                      <div class="field">
+                        <%= label_tag 'columns', 'Display Columns:' %>
+                      </div>
+                      <div class="values">
+                        <div class="column-checkboxes">
+                          <% available_columns = [
+                              ['Issue ID', 'id'],
+                              ['Subject', 'subject'],
+                              ['Priority', 'priority'],
+                              ['Assignee', 'assigned_to'],
+                              ['Story Points', 'story_points'],
+                              ['Difficulty', 'difficulty'],
+                              ['Tracker', 'tracker'],
+                              ['Status', 'status'],
+                              ['Tags', 'tags'],
+                              ['Due Date', 'due_date']
+                            ] %>
+                          <% available_columns.each do |name, key| %>
+                            <div class="checkbox-group">
+                              <%= check_box_tag 'c[]', key,
+                                  (params[:c] || ['id', 'subject', 'priority', 'assigned_to', 'story_points']).include?(key),
+                                  { id: "column_#{key}", class: 'column-checkbox' } %>
+                              <%= label_tag "column_#{key}", name %>
+                            </div>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="field">
+                        <%= label_tag 'group_by', 'Group By:' %>
+                      </div>
+                      <div class="values">
+                        <%= select_tag 'group_by',
+                            options_for_select([
+                              ['None', ''],
+                              ['Priority', 'priority'],
+                              ['Assignee', 'assigned_to'],
+                              ['Tracker', 'tracker'],
+                              ['Difficulty', 'difficulty']
+                            ], params[:group_by] || ''),
+                            { class: 'group-by-select' } %>
+                      </div>
+                    </div>
+                  </tbody>
+                </table>
+              </div>
+            </fieldset>
+
+            <!-- Sort Options -->
+            <fieldset id="sort" class="collapsible collapsed">
+              <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+                <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-731dc012.svg#icon--angle-right"></use></svg>
+                Sort
+              </legend>
+              <div style="display: none;">
+                <div class="sort-criteria-row">
+                  <span class="query_sort_criteria_count">1:</span>
+                  <label class="hidden-for-sighted" for="query_sort_criteria_attribute_0">Sort attribute</label>
+                  <select name="query[sort_criteria][0][]" id="query_sort_criteria_attribute_0" class="sort-attribute-select">
+                    <option value=""></option>
+                    <option value="id" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'id' %>>Issue ID</option>
+                    <option value="subject" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'subject' %>>Subject</option>
+                    <option value="priority" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'priority' %>>Priority</option>
+                    <option value="assigned_to" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'assigned_to' %>>Assignee</option>
+                    <option value="tracker" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'tracker' %>>Tracker</option>
+                    <option value="status" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'status' %>>Status</option>
+                    <option value="story_points" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'story_points' %>>Story Points</option>
+                    <option value="difficulty" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'difficulty' %>>Difficulty</option>
+                    <option value="created_on" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'created_on' %>>Created</option>
+                    <option value="updated_on" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 0) == 'updated_on' %>>Updated</option>
+                  </select>
+                  <label class="hidden-for-sighted" for="query_sort_criteria_direction_0">Sort direction</label>
+                  <select name="query[sort_criteria][0][]" id="query_sort_criteria_direction_0" class="sort-direction-select">
+                    <option value=""></option>
+                    <option value="asc" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 1) == 'asc' %>>Ascending</option>
+                    <option value="desc" <%= 'selected' if params.dig(:query, :sort_criteria, 0, 1) == 'desc' %>>Descending</option>
+                  </select>
+                </div>
+
+                <div class="sort-criteria-row">
+                  <span class="query_sort_criteria_count">2:</span>
+                  <label class="hidden-for-sighted" for="query_sort_criteria_attribute_1">Sort attribute</label>
+                  <select name="query[sort_criteria][1][]" id="query_sort_criteria_attribute_1" class="sort-attribute-select">
+                    <option value=""></option>
+                    <option value="id" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'id' %>>Issue ID</option>
+                    <option value="subject" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'subject' %>>Subject</option>
+                    <option value="priority" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'priority' %>>Priority</option>
+                    <option value="assigned_to" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'assigned_to' %>>Assignee</option>
+                    <option value="tracker" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'tracker' %>>Tracker</option>
+                    <option value="status" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'status' %>>Status</option>
+                    <option value="story_points" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'story_points' %>>Story Points</option>
+                    <option value="difficulty" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'difficulty' %>>Difficulty</option>
+                    <option value="created_on" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'created_on' %>>Created</option>
+                    <option value="updated_on" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 0) == 'updated_on' %>>Updated</option>
+                  </select>
+                  <label class="hidden-for-sighted" for="query_sort_criteria_direction_1">Sort direction</label>
+                  <select name="query[sort_criteria][1][]" id="query_sort_criteria_direction_1" class="sort-direction-select">
+                    <option value=""></option>
+                    <option value="asc" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 1) == 'asc' %>>Ascending</option>
+                    <option value="desc" <%= 'selected' if params.dig(:query, :sort_criteria, 1, 1) == 'desc' %>>Descending</option>
+                  </select>
+                </div>
+
+                <div class="sort-criteria-row">
+                  <span class="query_sort_criteria_count">3:</span>
+                  <label class="hidden-for-sighted" for="query_sort_criteria_attribute_2">Sort attribute</label>
+                  <select name="query[sort_criteria][2][]" id="query_sort_criteria_attribute_2" class="sort-attribute-select">
+                    <option value=""></option>
+                    <option value="id" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'id' %>>Issue ID</option>
+                    <option value="subject" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'subject' %>>Subject</option>
+                    <option value="priority" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'priority' %>>Priority</option>
+                    <option value="assigned_to" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'assigned_to' %>>Assignee</option>
+                    <option value="tracker" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'tracker' %>>Tracker</option>
+                    <option value="status" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'status' %>>Status</option>
+                    <option value="story_points" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'story_points' %>>Story Points</option>
+                    <option value="difficulty" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'difficulty' %>>Difficulty</option>
+                    <option value="created_on" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'created_on' %>>Created</option>
+                    <option value="updated_on" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 0) == 'updated_on' %>>Updated</option>
+                  </select>
+                  <label class="hidden-for-sighted" for="query_sort_criteria_direction_2">Sort direction</label>
+                  <select name="query[sort_criteria][2][]" id="query_sort_criteria_direction_2" class="sort-direction-select">
+                    <option value=""></option>
+                    <option value="asc" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 1) == 'asc' %>>Ascending</option>
+                    <option value="desc" <%= 'selected' if params.dig(:query, :sort_criteria, 2, 1) == 'desc' %>>Descending</option>
+                  </select>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+          <p class="buttons">
+            <%= link_to_function l(:button_apply), '$("#query_form").submit()', class: 'icon icon-checked' %>
+            <%= link_to l(:button_clear), { project_id: @project }, class: 'icon icon-reload' %>
+            <% if User.current.allowed_to?(:save_queries, @project) %>
+              <%= link_to 'Save', '#', onclick: 'showQuerySaveForm(); return false;', class: 'icon icon-save' %>
+            <% end %>
+          </p>
+        </div>
+      </fieldset>
+    <% end %>
+  </div>
+
+  <div class="box">
+    <div class="tabular">
+      <% if @project.agile_queries.visible(User.current).any? %>
+        <p>
+          <%= label_tag 'query_id', l(:label_query) + ':' %>
+          <%= select_tag 'query_id',
+              options_from_collection_for_select(@project.agile_queries.visible(User.current), :id, :name, @query.id),
+              { include_blank: l(:label_none),
+                onchange: "if (this.value != '') { window.location = '#{project_agile_board_path(@project)}?query_id=' + this.value; }",
+                class: 'small' } %>
+        </p>
+      <% end %>
+    </div>
+  </div>
 
   <div class="agile-board-listing">
-    <% @statuses.each do |status| %>
-      <div class="status-column" data-status-id="<%= status.id %>">
-        <div class="status-header">
-          <h3><%= status.name %> (<%= (@issues[status] || []).size %>)</h3>
-        </div>
-        <div class="card-list droppable-area" data-status-id="<%= status.id %>">
-          <% (@issues[status] || []).each do |issue| %>
+    <% if @statuses.any? %>
+      <% @statuses.each do |status| %>
+        <div class="status-column" data-status-id="<%= status.id %>">
+          <div class="status-header">
+            <h3><%= status.name %> (<%= (@issues[status] || []).size %>)</h3>
+          </div>
+          <div class="card-list droppable-area" data-status-id="<%= status.id %>">
+            <% (@issues[status] || []).each do |issue| %>
             <% priority_name = issue.priority.try(:name).to_s.parameterize %>
             <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>" data-lock-version="<%= issue.lock_version %>">
-              <div class="card-title"><%= link_to "##{issue.id}", issue_path(issue) %> : <%= issue.subject %></div>
-              <div class="card-meta">
-                <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span><br>
-                <span>🎯 <%= issue.story_points || 0 %> pts</span><br />
-                <% issue.tag_list.each_with_index do |tag, idx| %>
-                  <span class="issue-tag color-<%= idx % 10 %>"><%= tag %></span>
+              <div class="card-header">
+                <% selected_columns = params[:c] || ['id', 'subject', 'priority', 'assigned_to', 'story_points'] %>
+                <% if selected_columns.include?('id') %>
+                  <div class="card-id"><%= link_to "##{issue.id}", issue_path(issue) %></div>
+                <% end %>
+                <% if selected_columns.include?('priority') %>
+                  <div class="card-priority priority-<%= priority_name %>">
+                    <%= issue.priority.name.first.upcase %>
+                  </div>
                 <% end %>
               </div>
+
+              <% if selected_columns.include?('subject') %>
+                <div class="card-title">
+                  <%= link_to issue.subject, issue_path(issue) %>
+                </div>
+              <% end %>
+
+              <div class="card-meta">
+                <% if selected_columns.include?('tracker') %>
+                  <div class="card-meta-item">
+                    <span>📋 <%= issue.tracker.name %></span>
+                  </div>
+                <% end %>
+
+                <% if selected_columns.include?('assigned_to') %>
+                  <div class="card-meta-item">
+                    <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span>
+                  </div>
+                <% end %>
+
+                <% if selected_columns.include?('story_points') %>
+                  <div class="card-meta-item">
+                    <span>🎯 <%= issue.story_points || 0 %> pts</span>
+                  </div>
+                <% end %>
+
+                <% if selected_columns.include?('difficulty') && issue.difficulty.present? %>
+                  <div class="card-meta-item">
+                    <span>⚡ <%= issue.difficulty.capitalize %></span>
+                  </div>
+                <% end %>
+
+                <% if selected_columns.include?('due_date') && issue.due_date.present? %>
+                  <div class="card-meta-item">
+                    <span>📅 <%= l(:date_format, issue.due_date) %></span>
+                  </div>
+                <% end %>
+              </div>
+
+              <% if selected_columns.include?('tags') && issue.respond_to?(:tag_list) %>
+                <div class="card-footer">
+                  <div class="card-tags">
+                    <% issue.tag_list.each_with_index do |tag, idx| %>
+                      <span class="card-tag"><%= tag %></span>
+                    <% end %>
+                  </div>
+                  <% if selected_columns.include?('story_points') %>
+                    <div class="card-points">
+                      <%= issue.story_points || 0 %> SP
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
             </div>
           <% end %>
         </div>
+      </div>
+    <% end %>
+    <% else %>
+      <!-- Empty state when no issues match filters -->
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <svg class="s24 icon-svg" aria-hidden="true">
+            <use href="/assets/icons-731dc012.svg#icon--search"></use>
+          </svg>
+        </div>
+        <h3>No issues found</h3>
+        <p>No issues match your current filter criteria. Try adjusting your filters or clearing them to see more results.</p>
+        <%= link_to 'Clear Filters', { project_id: @project }, class: 'btn btn-primary' %>
       </div>
     <% end %>
   </div>
 </div>
 <%= javascript_include_tag 'Sortable.min', plugin: 'redmine_sprint_board_pro' %>
 <%= javascript_include_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
+<%= javascript_include_tag 'agile_filters', plugin: 'redmine_sprint_board_pro' %>
