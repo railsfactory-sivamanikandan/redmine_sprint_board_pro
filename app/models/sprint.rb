@@ -64,4 +64,42 @@ class Sprint < ApplicationRecord
       [day, remaining]
     end
   end
+
+  def incomplete_issues
+    issues.joins(:status).where(issue_statuses: { is_closed: false })
+  end
+
+  def next_sprint
+    project.sprints.where('start_date > ?', end_date || Date.current)
+                   .where(completed: false)
+                   .order(:start_date)
+                   .first
+  end
+
+  def spillover_to_next_sprint(issue_ids = nil)
+    target_sprint = next_sprint
+    return { success: false, message: 'No next sprint available' } unless target_sprint
+
+    issues_to_move = if issue_ids.present?
+                       incomplete_issues.where(id: issue_ids)
+                     else
+                       incomplete_issues
+                     end
+
+    return { success: false, message: 'No incomplete issues to move' } if issues_to_move.empty?
+
+    moved_count = 0
+    issues_to_move.find_each do |issue|
+      if issue.update(sprint_id: target_sprint.id)
+        moved_count += 1
+      end
+    end
+
+    {
+      success: true,
+      message: "Successfully moved #{moved_count} incomplete #{moved_count == 1 ? 'issue' : 'issues'} to #{target_sprint.name}",
+      moved_count: moved_count,
+      target_sprint: target_sprint
+    }
+  end
 end

@@ -11,6 +11,7 @@
 - 🎯 Story Points and Sprint Assignment
 - 🏷 **Tags for Issues** (with color coding & autocomplete)
 - 🔍 **Tag Filters in Sprints**
+- 🔄 **Sprint Spillover** (JIRA-like task movement to next sprint)
 - 📉 Burndown & Velocity Charts
 - 🧠 Smart Backlog Suggestions (AI-assisted)
 - 🎨 Card Color Coding (e.g., based on priority)
@@ -53,30 +54,75 @@ We use acts-as-taggable-on to manage tags.
 - Sprints Page: Filter sprints by tags applied to their issues.
 - Agile Board: Filter visible issues by tags without reloading the entire board. (coming soon)
 
+## 🔄 Sprint Spillover
+
+Sprint Spillover is a JIRA-like feature that allows you to easily move incomplete tasks from one sprint to the next, streamlining your sprint planning process.
+
+### ✨ Key Features
+- **Smart Detection**: Automatically identifies incomplete tasks in the current sprint
+- **Next Sprint Integration**: Finds the chronologically next available sprint
+- **Bulk & Selective Options**: Move all incomplete tasks or select specific ones
+- **Visual Indicators**: Shows count of incomplete tasks and target sprint
+- **Permission-Based**: Respects Redmine's permission system (`edit_agile_board`)
+
+### 🎯 How It Works
+
+#### Agile Board View
+- Select a sprint from the dropdown
+- If there are incomplete tasks and a next sprint exists, spillover controls appear
+- **"Move to [Next Sprint]"**: Bulk move all incomplete tasks
+- **"Select Tasks"**: Choose specific tasks to move via modal dialog
+
+#### Sprint Show Page
+- View any sprint detail page
+- Spillover section appears in the sprint summary (if applicable)
+- Same bulk and selective movement options available
+- Clean breadcrumb navigation for easy sprint browsing
+
+### 🔧 Technical Details
+- **Backend**: Robust sprint model with `spillover_to_next_sprint()` method
+- **Frontend**: Modern modal interface with SVG icons and responsive design
+- **Permissions**: Uses existing `edit_agile_board` permission
+- **Validation**: Confirms actions with user before moving tasks
+- **Feedback**: Success notifications and error handling
+
+### 📋 Usage Examples
+
+1. **End of Sprint**: Quickly move unfinished user stories to the next sprint
+2. **Sprint Planning**: Clean up previous sprint while planning the next one
+3. **Backlog Management**: Efficiently redistribute work across upcoming sprints
+
+### 💡 Benefits
+- **Time Saving**: No manual task reassignment needed
+- **Consistency**: Maintains sprint continuity and planning accuracy
+- **User Experience**: Familiar JIRA-like workflow for Agile teams
+- **Flexibility**: Choose between bulk moves or granular task selection
+
 ## 📚 Usage
 - Go to your project → Agile Board
 - Select/Create a Sprint
 - Drag & drop issues across status columns
 - Create or edit a Sprint with smart issue suggestions
+- Use spillover controls to move incomplete tasks to next sprint
 - Use the charts tab for burndown/velocity metrics
 ### Charts & Metrics
 
-- 📈 **Cumulative Flow Diagram (CFD)**  
+- 📈 **Cumulative Flow Diagram (CFD)**
   Track the number of issues in each workflow state over time to identify bottlenecks.
 
-- 🚀 **Velocity Chart**  
+- 🚀 **Velocity Chart**
   See how many story points (or issues) your team completes each sprint.
 
-- 📉 **Burndown Chart**  
+- 📉 **Burndown Chart**
   Monitor remaining work vs. time to ensure you're on track.
 
-- 🔍 **Open vs. Closed Issues**  
+- 🔍 **Open vs. Closed Issues**
   Compare counts of open and completed issues within the sprint.
 
-- 🗂 **Issue Type Breakdown**  
+- 🗂 **Issue Type Breakdown**
   Visualize the distribution of Bugs, Features, Tasks, etc., in your sprint.
 
-- 👥 **Team Contribution**  
+- 👥 **Team Contribution**
   See who’s contributing the most in terms of issues completed or story points delivered.
 
 
@@ -195,6 +241,8 @@ bundle exec rails server
 - Add WIP limits per column
 - Add in-place editing for cards
 - Add REST API support
+- Batch operations for multiple sprints
+- Advanced spillover rules and automation
 
 ## 📄 License
 MIT License.

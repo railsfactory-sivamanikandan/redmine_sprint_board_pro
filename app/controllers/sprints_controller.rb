@@ -1,7 +1,7 @@
 class SprintsController < ApplicationController
   before_action :find_project
   before_action :find_sprint, only: %i[
-    show edit update destroy toggle_completed dashboard
+    show edit update destroy toggle_completed dashboard spillover_to_next
   ]
 
   include SprintsHelper
@@ -61,6 +61,23 @@ class SprintsController < ApplicationController
     @velocity = SprintService.new(@sprint).velocity_metrics
 
     params[:chart_type] == 'difficulty' ? load_difficulty_charts : load_normal_charts
+  end
+
+  def spillover_to_next
+    render_403 unless User.current.allowed_to?(:edit_agile_board, @project)
+
+    issue_ids = params[:issue_ids].present? ? params[:issue_ids] : nil
+    result = @sprint.spillover_to_next_sprint(issue_ids)
+
+    respond_to do |format|
+      if result[:success]
+        format.html { redirect_back(fallback_location: project_sprints_path(@project), notice: result[:message]) }
+        format.json { render json: result }
+      else
+        format.html { redirect_back(fallback_location: project_sprints_path(@project), alert: result[:message]) }
+        format.json { render json: result, status: :unprocessable_entity }
+      end
+    end
   end
 
   private

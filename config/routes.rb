@@ -7,6 +7,7 @@ RedmineApp::Application.routes.draw do
       member do
         patch :toggle_completed
         get :dashboard
+        post :spillover_to_next
       end
     end
   end

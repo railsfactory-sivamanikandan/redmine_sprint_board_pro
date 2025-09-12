@@ -20,6 +20,527 @@
   gap: 20px;
 }
 
+.sprint-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Spillover Controls */
+.spillover-controls {
+  background: #f8f9fc;
+  border: 1px solid #dfe1e6;
+  border-radius: 6px;
+  padding: 12px 16px;
+  min-width: 280px;
+}
+
+.spillover-info {
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spillover-info.no-next-sprint {
+  opacity: 0.7;
+}
+
+.incomplete-count {
+  color: #bf2600;
+  font-weight: 500;
+}
+
+.spillover-actions {
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.spillover-btn {
+  background: #0052cc;
+  color: white !important;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 3px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spillover-btn:hover {
+  background: #0747a6;
+  color: white;
+  text-decoration: none;
+}
+
+.spillover-btn .spillover-icon {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+}
+
+.spillover-selective-btn {
+  background: #6b778c;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spillover-selective-btn:hover {
+  background: #5e6c84;
+}
+
+.spillover-selective-btn .spillover-icon {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  background: #f4f5f7;
+  padding: 20px 24px;
+  border-bottom: 1px solid #dfe1e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #172b4d;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-close {
+  color: #6b778c;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #172b4d;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+/* Task Selection */
+.task-selection {
+  margin-bottom: 24px;
+}
+
+.select-all-wrapper {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f4f5f7;
+}
+
+.select-all-wrapper label {
+  font-weight: 600;
+  color: #172b4d;
+}
+
+.incomplete-tasks-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #dfe1e6;
+  border-radius: 3px;
+  padding: 8px 0;
+}
+
+.task-item {
+  padding: 8px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border-bottom: 1px solid #f4f5f7;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-item:hover {
+  background-color: #f4f5f7;
+}
+
+.task-label {
+  cursor: pointer;
+  flex: 1;
+  font-weight: normal;
+}
+
+.task-id {
+  color: #6b778c;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.task-subject {
+  display: block;
+  color: #172b4d;
+  font-weight: 500;
+  margin: 2px 0 6px 0;
+  line-height: 1.3;
+}
+
+.task-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.task-status {
+  background: #dfe1e6;
+  color: #42526e;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.task-assignee {
+  color: #6b778c;
+  font-size: 12px;
+}
+
+.task-points {
+  color: #0052cc;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #f4f5f7;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #0052cc;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #0747a6;
+}
+
+.btn-primary:disabled {
+  background: #dfe1e6;
+  color: #97a0af;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #fafbfc;
+  color: #42526e;
+  border: 1px solid #dfe1e6;
+}
+
+.btn-secondary:hover {
+  background: #f4f5f7;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Spillover notification */
+.spillover-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  z-index: 10001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.spillover-notification.success {
+  background: #00875a;
+}
+
+.spillover-notification.error {
+  background: #de350b;
+}
+
+.spillover-notification.info {
+  background: #0052cc;
+}
+
+/* Sprint Show Page Breadcrumb Styles */
+.sprint-breadcrumb {
+  background: white;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.breadcrumb {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  color: #6b778c;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+  content: '›';
+  margin-left: 8px;
+  color: #97a0af;
+  font-size: 16px;
+}
+
+.breadcrumb-item a {
+  color: #0052cc;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumb-item a:hover {
+  color: #0747a6;
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: #172b4d;
+  font-weight: 500;
+}
+
+.sprint-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.sprint-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #172b4d;
+}
+
+.sprint-status-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-success {
+  background: #e3fcef;
+  color: #00875a;
+  border: 1px solid #abf5d1;
+}
+
+.badge-primary {
+  background: #deebff;
+  color: #0052cc;
+  border: 1px solid #b3d4ff;
+}
+
+.badge-secondary {
+  background: #f4f5f7;
+  color: #6b778c;
+  border: 1px solid #dfe1e6;
+}
+
+/* Sprint Show Page Spillover Styles */
+.sprint-info-section {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.sprint-details {
+  flex: 1;
+}
+
+.sprint-show-spillover {
+  background: #f8f9fc;
+  border: 1px solid #dfe1e6;
+  border-radius: 6px;
+  padding: 16px;
+  min-width: 300px;
+}
+
+.spillover-section h4 {
+  margin: 0 0 12px 0;
+  color: #172b4d;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.spillover-section .spillover-info {
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.next-sprint-info {
+  display: block;
+  color: #6b778c;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.spillover-section .spillover-actions {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.spillover-section .spillover-actions .btn {
+  justify-content: center;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .spillover-controls {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .spillover-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .spillover-btn, .spillover-selective-btn {
+    text-align: center;
+    width: 100%;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+
+  .sprint-info-section {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .sprint-show-spillover {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .sprint-header-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .sprint-title {
+    font-size: 24px;
+  }
+
+  .breadcrumb {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .sprint-breadcrumb {
+    padding: 16px 20px;
+  }
+}
+
 .agile-board-listing {
   display: flex;
   gap: 20px;

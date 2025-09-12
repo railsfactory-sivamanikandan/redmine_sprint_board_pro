@@ -6,15 +6,52 @@
   <script>window.projectIdentifier = "<%= @project.identifier %>"</script>
 <% end %>
 
-<h2><%= @sprint.name %> <span style="font-size: 0.8em; color: #888;">(Sprint)</span></h2>
+<div class="sprint-breadcrumb">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <%= link_to @project.name, project_path(@project) %>
+      </li>
+      <li class="breadcrumb-item">
+        <%= link_to 'Sprints', project_sprints_path(@project) %>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        <strong><%= @sprint.name %></strong>
+      </li>
+    </ol>
+  </nav>
+  <div class="sprint-header-info">
+    <h1 class="sprint-title"><%= @sprint.name %></h1>
+    <div class="sprint-status-badges">
+      <span class="badge badge-<%= @sprint.completed? ? 'success' : 'primary' %>">
+        <%= @sprint.completed? ? 'Completed' : 'Active' %>
+      </span>
+      <% if @sprint.start_date && @sprint.end_date %>
+        <span class="badge badge-secondary">
+          <%= distance_of_time_in_words(@sprint.start_date, @sprint.end_date) %> sprint
+        </span>
+      <% end %>
+    </div>
+  </div>
+</div>
 
 <div class="sprint-summary box">
-  <p><strong>📅 Start Date:</strong> <%= format_date(@sprint.start_date) %></p>
-  <p><strong>📅 End Date:</strong> <%= format_date(@sprint.end_date) %></p>
-  <p><strong>📈 Total Story Points:</strong> <%= @sprint.total_points %></p>
-  <p><strong>✅ Completed Points:</strong> <%= @sprint.completed_points %></p>
-  <p><strong>📊 Progress:</strong> <%= sprint_progress_percent(@sprint) %>%</p>
-  <p><%= link_to '📊 Dashboard', dashboard_project_sprint_path(@project,@sprint) %></p>
+  <div class="sprint-info-section">
+    <div class="sprint-details">
+      <p><strong>📅 Start Date:</strong> <%= format_date(@sprint.start_date) %></p>
+      <p><strong>📅 End Date:</strong> <%= format_date(@sprint.end_date) %></p>
+      <p><strong>📈 Total Story Points:</strong> <%= @sprint.total_points %></p>
+      <p><strong>✅ Completed Points:</strong> <%= @sprint.completed_points %></p>
+      <p><strong>📊 Progress:</strong> <%= sprint_progress_percent(@sprint) %>%</p>
+      <p><%= link_to '📊 Dashboard', dashboard_project_sprint_path(@project,@sprint) %></p>
+    </div>
+
+    <%= render 'shared/spillover_controls',
+               sprint: @sprint,
+               project: @project,
+               display_style: 'section',
+               css_class: 'sprint-show-spillover' %>
+  </div>
 </div>
 
 <div class="drag-container">
@@ -106,4 +143,16 @@
 <br/>
 <p><%= link_to '⬅ Back to Sprint List', project_sprints_path(@project), class: 'icon icon-back' %></p>
 
+<%= render 'shared/spillover_modal',
+           sprint: @sprint,
+           project: @project,
+           modal_id: 'sprint-spillover-modal',
+           form_id: 'sprint-selective-spillover-form',
+           select_all_id: 'select_all_incomplete_sprint',
+           checkbox_class: 'incomplete-task-checkbox-sprint',
+           close_function: 'hideSprintSpilloverModal',
+           toggle_function: 'toggleAllIncompleteSprintShow',
+           submit_button_id: 'sprint-move-selected-btn' %>
+
 <%= javascript_include_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
+<%= javascript_include_tag 'spillover', plugin: 'redmine_sprint_board_pro' %>

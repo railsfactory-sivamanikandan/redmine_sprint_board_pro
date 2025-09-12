@@ -1,0 +1,74 @@
+<%
+  # Spillover Controls Partial
+  # 
+  # Required locals:
+  # - sprint: The sprint object
+  # - project: The project object
+  # - display_style: 'inline' (for agile board) or 'section' (for sprint show)
+  # - css_class: Additional CSS classes
+  
+  next_sprint = sprint.next_sprint
+  incomplete_count = sprint.incomplete_issues.count
+%>
+
+<% if User.current.allowed_to?(:edit_agile_board, project) %>
+  <% if (next_sprint && incomplete_count > 0) || (!next_sprint && incomplete_count > 0) %>
+    <div class="<%= css_class %>">
+      <% if display_style == 'section' %>
+        <% if next_sprint && incomplete_count > 0 %>
+          <div class="spillover-section">
+            <h4>🔄 Sprint Spillover</h4>
+            <div class="spillover-info">
+              <span class="incomplete-count">
+                <strong><%= incomplete_count %></strong> incomplete <%= incomplete_count == 1 ? 'task' : 'tasks' %>
+              </span>
+              <span class="next-sprint-info">can be moved to <strong><%= next_sprint.name %></strong></span>
+            </div>
+            <%= render 'shared/spillover_actions', 
+                       sprint: sprint, 
+                       project: project, 
+                       next_sprint: next_sprint, 
+                       incomplete_count: incomplete_count,
+                       button_style: 'section',
+                       modal_function: 'showSprintSpilloverModal' %>
+          </div>
+        <% elsif !next_sprint && incomplete_count > 0 %>
+          <div class="spillover-section">
+            <h4>📋 Incomplete Tasks</h4>
+            <div class="spillover-info no-next-sprint">
+              <span class="incomplete-count">
+                <strong><%= incomplete_count %></strong> incomplete <%= incomplete_count == 1 ? 'task' : 'tasks' %>
+              </span>
+              <em>(No next sprint available)</em>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <!-- Inline style for agile board -->
+        <% if next_sprint && incomplete_count > 0 %>
+          <p class="spillover-info">
+            <span class="incomplete-count">
+              <strong><%= incomplete_count %></strong> incomplete <%= incomplete_count == 1 ? 'task' : 'tasks' %>
+            </span>
+          </p>
+          <p class="spillover-actions">
+            <%= render 'shared/spillover_actions', 
+                       sprint: sprint, 
+                       project: project, 
+                       next_sprint: next_sprint, 
+                       incomplete_count: incomplete_count,
+                       button_style: 'inline',
+                       modal_function: 'showSpilloverModal' %>
+          </p>
+        <% elsif !next_sprint && incomplete_count > 0 %>
+          <p class="spillover-info no-next-sprint">
+            <span class="incomplete-count">
+              <strong><%= incomplete_count %></strong> incomplete <%= incomplete_count == 1 ? 'task' : 'tasks' %>
+            </span>
+            <em>(No next sprint available)</em>
+          </p>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

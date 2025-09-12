@@ -17,11 +17,19 @@
           <%= select_tag :sprint_id, options_from_collection_for_select(@sprints, :id, :name, params[:sprint_id]), include_blank: 'All', onchange: 'this.form.submit();' %>
         <% end %>
       </div>
-      <div>
+      <div class="sprint-actions">
         <% if User.current.allowed_to?(:manage_sprints, @project) %>
           <p>
             <%= link_to 'New Sprint', new_project_sprint_path(@project), class: 'icon icon-add' %>
           </p>
+        <% end %>
+
+        <% if @selected_sprint %>
+          <%= render 'shared/spillover_controls',
+                     sprint: @selected_sprint,
+                     project: @project,
+                     display_style: 'inline',
+                     css_class: 'spillover-controls' %>
         <% end %>
       </div>
     </div>
@@ -455,6 +463,20 @@
     <% end %>
   </div>
 </div>
+<% if @selected_sprint %>
+  <%= render 'shared/spillover_modal',
+             sprint: @selected_sprint,
+             project: @project,
+             modal_id: 'spillover-modal',
+             form_id: 'selective-spillover-form',
+             select_all_id: 'select_all_incomplete',
+             checkbox_class: 'incomplete-task-checkbox',
+             close_function: 'hideSpilloverModal',
+             toggle_function: 'toggleAllIncomplete',
+             submit_button_id: 'agile-move-selected-btn' %>
+<% end %>
+
 <%= javascript_include_tag 'Sortable.min', plugin: 'redmine_sprint_board_pro' %>
 <%= javascript_include_tag 'agile_board', plugin: 'redmine_sprint_board_pro' %>
 <%= javascript_include_tag 'agile_filters', plugin: 'redmine_sprint_board_pro' %>
+<%= javascript_include_tag 'spillover', plugin: 'redmine_sprint_board_pro' %>

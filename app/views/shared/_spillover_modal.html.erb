@@ -1,0 +1,71 @@
+<%
+  # Spillover Modal Partial
+  # 
+  # Required locals:
+  # - sprint: The sprint object
+  # - project: The project object
+  # - modal_id: Unique ID for the modal
+  # - form_id: Unique ID for the form
+  # - select_all_id: Unique ID for select all checkbox
+  # - checkbox_class: CSS class for individual task checkboxes
+  # - close_function: JavaScript function name for closing modal
+  # - toggle_function: JavaScript function name for toggle all
+  # - submit_button_id: Unique ID for submit button
+  
+  next_sprint = sprint.next_sprint
+%>
+
+<% if next_sprint && User.current.allowed_to?(:edit_agile_board, project) %>
+  <div id="<%= modal_id %>" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Select Tasks to Move to <%= next_sprint.name %></h3>
+        <span class="modal-close" onclick="<%= close_function %>()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Select specific incomplete tasks to move to the next sprint:</p>
+        <%= form_with url: spillover_to_next_project_sprint_path(project, sprint), 
+                     method: :post, 
+                     id: form_id,
+                     class: 'spillover-form' do |form| %>
+          <div class="task-selection">
+            <div class="select-all-wrapper">
+              <%= check_box_tag 'select_all_incomplete_tasks', '1', false, 
+                  { id: select_all_id,
+                    onchange: "#{toggle_function}(this.checked)" } %>
+              <%= label_tag select_all_id, 'Select All', class: 'select-all-label' %>
+            </div>
+            <div class="incomplete-tasks-list">
+              <% sprint.incomplete_issues.includes(:status, :priority, :assigned_to).each do |issue| %>
+                <div class="task-item">
+                  <%= check_box_tag 'issue_ids[]', issue.id, false, 
+                      { id: "#{modal_id}_issue_#{issue.id}",
+                        class: checkbox_class } %>
+                  <%= label_tag "#{modal_id}_issue_#{issue.id}", class: 'task-label' do %>
+                    <span class="task-id">#<%= issue.id %></span>
+                    <span class="task-subject"><%= truncate(issue.subject, length: 60) %></span>
+                    <div class="task-meta">
+                      <span class="task-status status-<%= issue.status.name.downcase.tr(' ', '-') %>">
+                        <%= issue.status.name %>
+                      </span>
+                      <% if issue.assigned_to %>
+                        <span class="task-assignee">@ <%= issue.assigned_to.name %></span>
+                      <% end %>
+                      <% if issue.story_points %>
+                        <span class="task-points"><%= issue.story_points %> SP</span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <%= form.submit 'Move Selected Tasks', class: 'btn btn-primary', id: submit_button_id %>
+            <button type="button" class="btn btn-secondary" onclick="<%= close_function %>()">Cancel</button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
