@@ -64,6 +64,8 @@
   // Initialize enhanced filters
   function initializeFilters() {
     handleStoryPointsOperator();
+    initializeCardConfiguration();
+    initializeStatusFilters();
 
     // Add filter removal functionality
     document.querySelectorAll('.icon-del').forEach(button => {
@@ -95,6 +97,51 @@
           }, 500);
         }
       });
+    });
+  }
+
+  function initializeStatusFilters() {
+    // Sync "Select All" checkbox state on page load
+    syncSelectAllStatus();
+
+    // Add event listeners to individual status checkboxes
+    document.querySelectorAll('.status-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', syncSelectAllStatus);
+    });
+  }
+
+  function syncSelectAllStatus() {
+    const selectAllCheckbox = document.getElementById('select_all_statuses');
+    const statusCheckboxes = document.querySelectorAll('.status-checkbox');
+
+    if (!selectAllCheckbox || statusCheckboxes.length === 0) return;
+
+    // Count checked status checkboxes
+    const checkedCount = Array.from(statusCheckboxes).filter(cb => cb.checked).length;
+
+    // Update Select All state
+    if (checkedCount === statusCheckboxes.length) {
+      // All are checked
+      selectAllCheckbox.checked = true;
+      selectAllCheckbox.indeterminate = false;
+    } else if (checkedCount === 0) {
+      // None are checked
+      selectAllCheckbox.checked = false;
+      selectAllCheckbox.indeterminate = false;
+    } else {
+      // Some are checked (indeterminate state)
+      selectAllCheckbox.checked = false;
+      selectAllCheckbox.indeterminate = true;
+    }
+  }
+
+  function initializeCardConfiguration() {
+    // Initialize button states based on current selection
+    updateCardPreview();
+
+    // Add event listeners for real-time preview updates
+    document.querySelectorAll('.column-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', updateCardPreview);
     });
   }
 
@@ -132,6 +179,112 @@
       buttons.style.display = 'block';
     }
   };
+
+  // Card Configuration Functions
+  window.applyCardConfiguration = function() {
+    const selectedFields = getSelectedCardFields();
+
+    if (selectedFields.length === 0) {
+      alert('Please select at least one field to display on cards.');
+      return;
+    }
+
+    // Update URL with new configuration and reload
+    const url = new URL(window.location.href);
+    url.searchParams.delete('c');
+    selectedFields.forEach(field => {
+      url.searchParams.append('c', field);
+    });
+
+    window.location.href = url.toString();
+  };
+
+  window.saveCardPreferences = function() {
+    const selectedFields = getSelectedCardFields();
+
+    if (selectedFields.length === 0) {
+      alert('Please select at least one field to display on cards.');
+      return;
+    }
+
+    const button = document.getElementById('save-card-preferences-btn');
+    const originalText = button.textContent;
+    button.textContent = 'Saving...';
+    button.disabled = true;
+
+    // Get project identifier from window variable or URL
+    const projectId = window.projectIdentifier ||
+                     window.location.pathname.match(/projects\/([^\/]+)/)[1];
+
+    fetch(`/projects/${projectId}/agile_board/save_card_preferences`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        card_fields: selectedFields
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        button.textContent = '✓ Saved!';
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.disabled = false;
+        }, 2000);
+      } else {
+        throw new Error(data.error || 'Failed to save preferences');
+      }
+    })
+    .catch(error => {
+      console.error('Error saving card preferences:', error);
+      alert('Failed to save card preferences: ' + error.message);
+      button.textContent = originalText;
+      button.disabled = false;
+    });
+  };
+
+  window.resetCardConfiguration = function() {
+    // Reset to default fields
+    const defaultFields = ['id', 'subject', 'priority', 'assigned_to', 'story_points'];
+    const checkboxes = document.querySelectorAll('.column-checkbox');
+
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = defaultFields.includes(checkbox.value);
+    });
+
+    // Apply the reset configuration
+    applyCardConfiguration();
+  };
+
+  window.updateCardPreview = function() {
+    // Could add a live preview here in the future
+    // For now, just update button states
+    const selectedFields = getSelectedCardFields();
+    const applyBtn = document.getElementById('apply-card-config-btn');
+    const saveBtn = document.getElementById('save-card-preferences-btn');
+
+    if (selectedFields.length === 0) {
+      applyBtn.disabled = true;
+      saveBtn.disabled = true;
+    } else {
+      applyBtn.disabled = false;
+      saveBtn.disabled = false;
+    }
+  };
+
+  function getSelectedCardFields() {
+    const selectedFields = [];
+    const checkboxes = document.querySelectorAll('.column-checkbox:checked');
+
+    checkboxes.forEach(checkbox => {
+      selectedFields.push(checkbox.value);
+    });
+
+    return selectedFields;
+  }
 
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {

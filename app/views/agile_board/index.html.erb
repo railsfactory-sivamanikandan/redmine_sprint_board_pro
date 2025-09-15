@@ -200,45 +200,62 @@
             </div>
           </fieldset>
 
-            <!-- Column Display Options -->
-            <fieldset id="filters" class="collapsible collapsed">
+            <!-- Card Display Configuration -->
+            <fieldset id="card-display" class="collapsible">
               <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
-                <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-731dc012.svg#icon--angle-right"></use></svg>
-                <%= l(:label_options) %>
+                <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-731dc012.svg#icon--angle-down"></use></svg>
+                Card Display Configuration
               </legend>
-              <div style="display: none;">
-                <table class="columns-table">
-                  <tbody>
-                    <div>
-                      <div class="field">
-                        <%= label_tag 'columns', 'Display Columns:' %>
-                      </div>
-                      <div class="values">
-                        <div class="column-checkboxes">
-                          <% available_columns = [
-                              ['Issue ID', 'id'],
-                              ['Subject', 'subject'],
-                              ['Priority', 'priority'],
-                              ['Assignee', 'assigned_to'],
-                              ['Story Points', 'story_points'],
-                              ['Difficulty', 'difficulty'],
-                              ['Tracker', 'tracker'],
-                              ['Status', 'status'],
-                              ['Tags', 'tags'],
-                              ['Due Date', 'due_date']
-                            ] %>
-                          <% available_columns.each do |name, key| %>
-                            <div class="checkbox-group">
-                              <%= check_box_tag 'c[]', key,
-                                  (params[:c] || ['id', 'subject', 'priority', 'assigned_to', 'story_points']).include?(key),
-                                  { id: "column_#{key}", class: 'column-checkbox' } %>
-                              <%= label_tag "column_#{key}", name %>
-                            </div>
-                          <% end %>
+              <div>
+                <div class="card-config-section">
+                  <div class="field-selection">
+                    <h4>Choose Fields to Display on Cards:</h4>
+                    <div class="column-checkboxes">
+                      <% available_columns = [
+                          ['Issue ID', 'id'],
+                          ['Subject', 'subject'],
+                          ['Priority', 'priority'],
+                          ['Assignee', 'assigned_to'],
+                          ['Story Points', 'story_points'],
+                          ['Difficulty', 'difficulty'],
+                          ['Tracker', 'tracker'],
+                          ['Status', 'status'],
+                          ['Tags', 'tags'],
+                          ['Due Date', 'due_date']
+                        ] %>
+                      <% available_columns.each do |name, key| %>
+                        <div class="checkbox-group" style="display: inline-block; margin: 5px 15px 5px 0;">
+                          <%= check_box_tag 'c[]', key,
+                              @selected_card_fields.include?(key),
+                              { id: "column_#{key}", class: 'column-checkbox',
+                                onchange: 'updateCardPreview()' } %>
+                          <%= label_tag "column_#{key}", name, style: 'margin-left: 5px; font-weight: normal;' %>
                         </div>
-                      </div>
+                      <% end %>
                     </div>
-                    <div>
+                  </div>
+
+                  <div class="card-actions" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                    <div class="action-buttons">
+                      <%= button_tag 'Apply Changes', type: 'button',
+                          onclick: "applyCardConfiguration()",
+                          class: 'icon icon-checked',
+                          id: 'apply-card-config-btn' %>
+                      <%= button_tag 'Save as My Default', type: 'button',
+                          onclick: "saveCardPreferences()",
+                          class: 'icon icon-save',
+                          id: 'save-card-preferences-btn' %>
+                      <%= button_tag 'Reset to Default', type: 'button',
+                          onclick: "resetCardConfiguration()",
+                          class: 'icon icon-reload',
+                          id: 'reset-card-config-btn' %>
+                    </div>
+                    <div class="action-descriptions" style="margin-top: 8px; font-size: 0.9em; color: #666;">
+                      <em>Apply: Update cards immediately | Save: Remember settings for future visits | Reset: Use default fields</em>
+                    </div>
+                  </div>
+                </div>
+                    <div class="group-by-section">
                       <div class="field">
                         <%= label_tag 'group_by', 'Group By:' %>
                       </div>
@@ -251,7 +268,7 @@
                               ['Tracker', 'tracker'],
                               ['Difficulty', 'difficulty']
                             ], params[:group_by] || ''),
-                            { class: 'group-by-select' } %>
+                            { class: 'group-by-select', title: 'Select how to group issues on the board' } %>
                       </div>
                     </div>
                   </tbody>
@@ -380,63 +397,62 @@
             <% priority_name = issue.priority.try(:name).to_s.parameterize %>
             <div class="card priority-<%= priority_name %>" draggable="true" data-id="<%= issue.id %>" data-lock-version="<%= issue.lock_version %>">
               <div class="card-header">
-                <% selected_columns = params[:c] || ['id', 'subject', 'priority', 'assigned_to', 'story_points'] %>
-                <% if selected_columns.include?('id') %>
+                <% if @selected_card_fields.include?('id') %>
                   <div class="card-id"><%= link_to "##{issue.id}", issue_path(issue) %></div>
                 <% end %>
-                <% if selected_columns.include?('priority') %>
+                <% if @selected_card_fields.include?('priority') %>
                   <div class="card-priority priority-<%= priority_name %>">
-                    <%= issue.priority.name.first.upcase %>
+                    <%= issue.priority.name %>
                   </div>
                 <% end %>
               </div>
 
-              <% if selected_columns.include?('subject') %>
+              <% if @selected_card_fields.include?('subject') %>
                 <div class="card-title">
                   <%= link_to issue.subject, issue_path(issue) %>
                 </div>
               <% end %>
 
               <div class="card-meta">
-                <% if selected_columns.include?('tracker') %>
+                <% if @selected_card_fields.include?('tracker') %>
                   <div class="card-meta-item">
                     <span>📋 <%= issue.tracker.name %></span>
                   </div>
                 <% end %>
 
-                <% if selected_columns.include?('assigned_to') %>
+                <% if @selected_card_fields.include?('assigned_to') %>
                   <div class="card-meta-item">
                     <span>👤 <%= issue.assigned_to&.name || 'Unassigned' %></span>
                   </div>
                 <% end %>
 
-                <% if selected_columns.include?('story_points') %>
+                <% if @selected_card_fields.include?('story_points') %>
                   <div class="card-meta-item">
                     <span>🎯 <%= issue.story_points || 0 %> pts</span>
                   </div>
                 <% end %>
 
-                <% if selected_columns.include?('difficulty') && issue.difficulty.present? %>
+                <% if @selected_card_fields.include?('difficulty') && issue.difficulty.present? %>
                   <div class="card-meta-item">
                     <span>⚡ <%= issue.difficulty.capitalize %></span>
                   </div>
                 <% end %>
 
-                <% if selected_columns.include?('due_date') && issue.due_date.present? %>
+                <% if @selected_card_fields.include?('due_date') && issue.due_date.present? %>
                   <div class="card-meta-item">
                     <span>📅 <%= l(:date_format, issue.due_date) %></span>
                   </div>
                 <% end %>
               </div>
 
-              <% if selected_columns.include?('tags') && issue.respond_to?(:tag_list) %>
+              <% if @selected_card_fields.include?('tags') && issue.respond_to?(:tag_list) %>
                 <div class="card-footer">
                   <div class="card-tags">
                     <% issue.tag_list.each_with_index do |tag, idx| %>
                       <span class="card-tag"><%= tag %></span>
                     <% end %>
                   </div>
-                  <% if selected_columns.include?('story_points') %>
+                  <% if @selected_card_fields.include?('story_points') %>
                     <div class="card-points">
                       <%= issue.story_points || 0 %> SP
                     </div>

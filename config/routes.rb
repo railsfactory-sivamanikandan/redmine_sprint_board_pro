@@ -3,6 +3,7 @@ RedmineApp::Application.routes.draw do
     get 'agile_board', to: 'agile_board#index'
     post 'agile_board/update_issue', to: 'agile_board#update_issue'
     post 'agile_board/update_positions', to: 'agile_board#update_positions'
+    post 'agile_board/save_card_preferences', to: 'agile_board#save_card_preferences'
     resources :sprints do
       member do
         patch :toggle_completed

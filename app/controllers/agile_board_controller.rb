@@ -14,14 +14,19 @@ class AgileBoardController < ApplicationController
 
     # Handle status filtering
     filtered_status_ids = @query.filtered_statuses
-    if filtered_status_ids.present?
+    all_status_ids = IssueStatus.pluck(:id)
+
+    # Check if all statuses are selected (equivalent to no filter)
+    if filtered_status_ids.present? && filtered_status_ids.sort != all_status_ids.sort
       # Show only selected statuses in the specified order
       @statuses = IssueStatus.where(id: filtered_status_ids).sorted
       selected_statuses = @statuses
     else
-      # Show all statuses if no filter is applied
+      # Show all statuses if no filter is applied or all are selected
       @statuses = IssueStatus.sorted
       selected_statuses = @statuses
+      # Clear the filter if all statuses are selected to avoid confusion
+      filtered_status_ids = nil if filtered_status_ids.present? && filtered_status_ids.sort == all_status_ids.sort
     end
 
     # Build base scope for issues
@@ -46,19 +51,26 @@ class AgileBoardController < ApplicationController
     # If additional filters are applied (beyond status), only show columns with issues
     has_additional_filters = has_non_status_filters?
 
-    if has_additional_filters && issues_by_status.any?
-      # Only show statuses that have matching issues
-      @statuses = issues_by_status.keys.select { |status| selected_statuses.include?(status) }.sort_by(&:position)
-      @issues = {}
-      @statuses.each { |status| @issues[status] = issues_by_status[status] || [] }
-    elsif has_additional_filters && issues_by_status.empty?
-      # No issues match the filters - show empty state
-      @statuses = []
-      @issues = {}
+    if has_additional_filters
+      if issues_by_status.any?
+        # Only show statuses that have matching issues after applying all filters
+        @statuses = issues_by_status.keys.select { |status| selected_statuses.include?(status) }.sort_by(&:position)
+        @issues = {}
+        @statuses.each { |status| @issues[status] = issues_by_status[status] || [] }
+      else
+        # No issues match the additional filters - show empty state
+        @statuses = []
+        @issues = {}
+      end
     else
-      # No additional filters or only status filter - show all selected statuses
+      # Only status filter (or no filters) - show all selected statuses with their issues
+      @statuses = selected_statuses
       @issues = {}
+
+      # Initialize all selected statuses with empty arrays
       selected_statuses.each { |status| @issues[status] = [] }
+
+      # Fill in the issues for each status
       issues_by_status.each do |status, status_issues|
         @issues[status] = status_issues if selected_statuses.include?(status)
       end
@@ -69,6 +81,9 @@ class AgileBoardController < ApplicationController
     @issues.values.flatten.each do |issue|
       @allowed_transitions[issue.id] = issue.new_statuses_allowed_to(User.current).map(&:id)
     end
+
+    # Set selected card fields from query
+    @selected_card_fields = @query.card_fields
   end
 
   def save_query
@@ -99,6 +114,25 @@ class AgileBoardController < ApplicationController
     @issue.sprint_id = params[:sprint_id]
     @issue.save
     head :ok
+  end
+
+  def save_card_preferences
+    if params[:card_fields].present?
+      # Find or create a query for this user and project for card preferences
+      query_name = "Card Preferences - #{@project.name}"
+      query = AgileQuery.where(user: User.current, project: @project, name: query_name).first_or_initialize
+
+      query.update_card_fields(params[:card_fields])
+      query.visibility = 0 # Private query
+
+      if query.save
+        render json: { success: true, message: 'Card preferences saved successfully' }
+      else
+        render json: { error: 'Failed to save card preferences' }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'No card fields specified' }, status: :unprocessable_entity
+    end
   end
 
   private
@@ -171,29 +205,59 @@ class AgileBoardController < ApplicationController
 
   def has_non_status_filters?
     # Check if any filters other than status are applied
-    return true if params.dig(:v, :priority_id).present?
-    return true if params.dig(:v, :tracker_id).present?
-    return true if params.dig(:v, :assigned_to_id).present?
-    return true if params.dig(:v, :story_points).present?
-    return true if params.dig(:v, :difficulty).present?
+    # Need to check for actual non-blank values, not just presence
+    return true if params.dig(:v, :priority_id).present? && Array(params[:v][:priority_id]).reject(&:blank?).any?
+    return true if params.dig(:v, :tracker_id).present? && Array(params[:v][:tracker_id]).reject(&:blank?).any?
+    return true if params.dig(:v, :assigned_to_id).present? && Array(params[:v][:assigned_to_id]).reject(&:blank?).any?
+    return true if params.dig(:v, :story_points).present? && Array(params[:v][:story_points]).reject(&:blank?).any?
+    return true if params.dig(:v, :difficulty).present? && Array(params[:v][:difficulty]).reject(&:blank?).any?
 
     false
   end
 
   def build_query
     @query = AgileQuery.new(project: @project)
+
     # Handle existing query loading
     if params[:query_id].present?
       existing_query = AgileQuery.find_by(id: params[:query_id])
-      @query = existing_query if existing_query&.project == @project
+      if existing_query&.project == @project
+        @query = existing_query
+        # Don't load card fields from saved queries - keep them separate
+        load_user_card_preferences unless params[:c].present?
+      end
+    else
+      # Load user's card preference query if no explicit fields specified
+      load_user_card_preferences unless params[:c].present?
     end
-    # Build query from parameters
+
+    # Build query from parameters (including card fields)
     @query.build_from_params(params, User.current.allowed_to?(:save_queries, @project))
-    # Save query if requested
+
+    # Save query if requested (but exclude card fields from saved queries)
     if params[:save_query] && params[:query] && params[:query][:name].present?
+      # Temporarily remove card fields for saving
+      temp_columns = @query.column_names
+      @query.column_names = []
+
       @query.user = User.current
       @query.project = @project
       @query.save
+
+      # Restore card fields for current use
+      @query.column_names = temp_columns
+    end
+  end
+
+  def load_user_card_preferences
+    preference_query = AgileQuery.where(
+      user: User.current,
+      project: @project,
+      name: "Card Preferences - #{@project.name}"
+    ).first
+
+    if preference_query
+      @query.column_names = preference_query.column_names
     end
   end
 end
